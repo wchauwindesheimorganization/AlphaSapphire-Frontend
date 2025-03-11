@@ -9,7 +9,12 @@ export const Route = createRootRoute({
     const accounts = instance.getAllAccounts();
 
     if (accounts.length === 0) {
-      instance.loginPopup();
+      // instance.loginPopup();
+      instance.ssoSilent({});
+      const accounts = instance.getAllAccounts();
+      if(accounts.length===0){
+        instance.loginPopup;
+      }
     } else return RootComponent();
   },
 });
