@@ -7,7 +7,7 @@ export const Route = createFileRoute("/")({
 });
 
 function HomeComponent() {
-  api.get("/api/users").then(response=>console.log(response.data))
+  api.get("/api/users").then((response) => console.log(response.data));
   return (
     <div className="p-2">
       <h3>Welcome Home!</h3>
