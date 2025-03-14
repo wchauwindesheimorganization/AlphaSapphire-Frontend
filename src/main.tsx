@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
-import Provider from "./Provider";
+import Provider from "./UserProvider";
 import { routeTree } from "./routeTree.gen";
 // MSAL imports
 import {

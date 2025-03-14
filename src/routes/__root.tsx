@@ -2,7 +2,7 @@ import { useEffect, createContext, useState, useContext } from "react";
 import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { useMsal } from "@azure/msal-react";
-import { Context } from "../Context";
+import { UserContext } from "../UserContext";
 export const Route = createRootRoute({
   component: () => {
     return RootComponent();
@@ -10,7 +10,7 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-  const { account } = useContext(Context);
+  const { account } = useContext(UserContext);
 
   useEffect(() => {}, []);
 
