@@ -1,25 +1,19 @@
-import * as React from "react";
+import { useEffect, createContext, useState, useContext } from "react";
 import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { useMsal } from "@azure/msal-react";
-
+import { Context } from "../Context";
 export const Route = createRootRoute({
   component: () => {
-    const { instance } = useMsal();
-    const accounts = instance.getAllAccounts();
-
-    if (accounts.length === 0) {
-      instance.loginPopup();
-      instance.ssoSilent({});
-      const accounts = instance.getAllAccounts();
-      if (accounts.length === 0) {
-        instance.loginPopup;
-      }
-    } else return RootComponent();
+    return RootComponent();
   },
 });
 
 function RootComponent() {
+  const { account } = useContext(Context);
+
+  useEffect(() => {}, []);
+
   return (
     <>
       <div className="p-2 flex gap-2 text-lg">

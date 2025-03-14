@@ -1,6 +1,6 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
+import Provider from "./Provider";
 import { routeTree } from "./routeTree.gen";
 // MSAL imports
 import {
@@ -28,8 +28,10 @@ declare module "@tanstack/react-router" {
 msalInstance.initialize().then(() => {
   // Account selection logic is app dependent. Adjust as needed for different use cases.
   const accounts = msalInstance.getAllAccounts();
-  if (accounts.length > 0) {
+  if (accounts.length == 1) {
     msalInstance.setActiveAccount(accounts[0]);
+  } else {
+    msalInstance.loginPopup();
   }
 
   msalInstance.addEventCallback((event: EventMessage) => {
@@ -37,16 +39,19 @@ msalInstance.initialize().then(() => {
       const payload = event.payload as AuthenticationResult;
       const account = payload.account;
       msalInstance.setActiveAccount(account);
+      window.document.location.reload();
     }
   });
   const rootElement = document.getElementById("app")!;
-
   if (!rootElement.innerHTML) {
     const root = ReactDOM.createRoot(rootElement);
-    const accounts = msalInstance.getAllAccounts();
     root.render(
       <MsalProvider instance={msalInstance}>
-        <RouterProvider router={router} />
+        {msalInstance && msalInstance.getActiveAccount() && (
+          <Provider>
+            <RouterProvider router={router} />
+          </Provider>
+        )}
       </MsalProvider>
     );
   }
