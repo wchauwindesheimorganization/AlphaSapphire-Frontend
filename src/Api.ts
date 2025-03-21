@@ -1,6 +1,6 @@
 import axios from "axios";
 import { msalInstance } from "./main";
-const api = axios.create();
+const api = axios.create({ baseURL: import.meta.env.VITE_BASE_URL });
 api.interceptors.request.use(async (config) => {
   const activeAccount = msalInstance?.getActiveAccount();
   if (activeAccount) {
@@ -11,7 +11,6 @@ api.interceptors.request.use(async (config) => {
       account: activeAccount,
     });
     config.headers.Authorization = `Bearer ${token.accessToken}`;
-    config.baseURL = import.meta.env.VITE_BASE_URL;
   }
   return config;
 });

@@ -13,13 +13,4 @@ export const msalConfig: Configuration = {
   },
 };
 
-// Add here scopes for id token to be used at MS Identity Platform endpoints.
-// export const loginRequest: PopupRequest = {
-//   scopes: ["User.Read"],
-// };
-
-// Add here the endpoints for MS Graph API services you would like to use.
-// export const graphConfig = {
-//   graphMeEndpoint: "https://graph.microsoft.com/v1.0/me",
-// };
 import.meta.env.VITE_BASE_URL;
