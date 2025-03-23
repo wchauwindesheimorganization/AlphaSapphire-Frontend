@@ -24,7 +24,6 @@ export default function Provider({ children }: { children: React.ReactNode }) {
 
     acquireUser();
   }, []);
-  console.log([activeAccount, account, "test"]);
   return (
     <UserContext.Provider value={{ account: account }}>
       {account && children}
