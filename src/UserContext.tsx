@@ -1,7 +1,8 @@
 import { createContext, Dispatch, SetStateAction, useContext } from "react";
 import { AccountInfo } from "@azure/msal-browser";
+import { User } from "./models/User";
 interface UserContextType {
-  account: {} | undefined;
+  account: User | undefined;
 }
 export const UserContext = createContext<UserContextType>({
   account: undefined,

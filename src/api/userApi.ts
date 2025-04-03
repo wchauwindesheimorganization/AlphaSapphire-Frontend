@@ -9,7 +9,8 @@ export async function getActiveUser(): Promise<any> {
   return response.data;
 }
 export async function createUser(user: User): Promise<any> {
-  return;
+  const response = await api.post(`/api/users`, user);
+  return response.data;
 }
 export async function updateUser(
   id: number,

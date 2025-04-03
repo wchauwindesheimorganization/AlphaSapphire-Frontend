@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { EditableCell } from "@/components/ui/EditableCell";
 import { ColumnDef } from "@tanstack/react-table";
 import { updateUser } from "../api/userApi";
 export type User = {
@@ -10,43 +11,11 @@ export type User = {
   LastName: string; // User's last name
 };
 
-const EditableCell: React.FC<{
-  value?: string | number | readonly string[] | boolean | undefined;
-  onChange?: (
-    value?: string | number | readonly string[] | boolean | undefined
-  ) => void; // Optional onChange
-  onBlur?: (value: string | number | readonly string[] | undefined) => void; // Optional onBlur
-  type?: string;
-  checked?: boolean;
-}> = ({ value: initialValue, onChange, onBlur, type, checked }) => {
-  const [value, setValue] = useState(initialValue);
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (type === "checkbox") {
-      onChange && onChange(e.target.checked); // Use `checked` for checkboxes
-    }
-  };
-  return (
-    <input
-      type={type || "text"}
-      value={String(value) || ""}
-      checked={type === "checkbox" ? checked : undefined} // Use `checked` for checkboxes
-      onChange={(e) => {
-        console.log(e.target.checked);
-        setValue(e.target.checked);
-        onChange && onChange(e.target.checked);
-      }}
-      onBlur={() =>
-        onBlur &&
-        onBlur(value as string | number | readonly string[] | undefined)
-      }
-      className="border rounded px-2 py-1" // Optional Tailwind classes for styling
-    />
-  );
-};
-
 export const columns = (
-  updateUserState: (id: number, updatedFields: Partial<User>) => void
-): ColumnDef<User>[] => [
+  updateUserState: (id: number, updatedFields: Partial<User>) => void,
+  handleSaveNewUser: (newUser: User) => void,
+  handleCancelNewUser: (id: number) => void
+): ColumnDef<User & { isNew?: boolean }>[] => [
   {
     accessorKey: "Id",
     header: "ID",
@@ -59,12 +28,22 @@ export const columns = (
       const user = row.row.original;
       return (
         <EditableCell
+          type="text"
           value={row.getValue() as string}
-          onBlur={(value) =>
-            updateUser(user.Id, { FirstName: String(value) }).then((data) =>
-              console.log(data)
-            )
-          }
+          onBlur={(value) => {
+            if (user.isNew) {
+              updateUserState(user.Id, { FirstName: String(value) });
+              return;
+            }
+            updateUser(user.Id, { FirstName: String(value) })
+              .then((data) => {
+                console.log(data);
+                updateUserState(user.Id, { FirstName: String(value) });
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }}
         />
       );
     },
@@ -77,12 +56,22 @@ export const columns = (
 
       return (
         <EditableCell
+          type="text"
           value={row.getValue() as string}
-          onBlur={(value) =>
-            updateUser(user.Id, { LastName: String(value) }).then((data) =>
-              console.log(data)
-            )
-          }
+          onBlur={(value) => {
+            if (user.isNew) {
+              updateUserState(user.Id, { LastName: String(value) });
+              return;
+            }
+            updateUser(user.Id, { LastName: String(value) })
+              .then((data) => {
+                console.log(data);
+                updateUserState(user.Id, { LastName: String(value) });
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }}
         />
       );
     },
@@ -94,12 +83,22 @@ export const columns = (
       const user = row.row.original;
       return (
         <EditableCell
+          type="text"
           value={row.getValue() as string}
-          onBlur={(value) =>
-            updateUser(user.Id, { Email: String(value) }).then((data) =>
-              console.log(data)
-            )
-          }
+          onBlur={(value) => {
+            if (user.isNew) {
+              updateUserState(user.Id, { Email: String(value) });
+              return;
+            }
+            updateUser(user.Id, { Email: String(value) })
+              .then((data) => {
+                console.log(data);
+                updateUserState(user.Id, { Email: String(value) });
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }}
         />
       );
     },
@@ -111,12 +110,22 @@ export const columns = (
       const user = row.row.original;
       return (
         <EditableCell
-          value={row.getValue() as string}
-          onBlur={(value) =>
-            updateUser(user.Id, { DepartmentId: Number(value) }).then((data) =>
-              console.log(data)
-            )
-          }
+          type="text"
+          value={row.getValue() as number}
+          onBlur={(value) => {
+            if (user.isNew) {
+              updateUserState(user.Id, { DepartmentId: Number(value) });
+              return;
+            }
+            updateUser(user.Id, { DepartmentId: Number(value) })
+              .then((data) => {
+                console.log(data);
+                updateUserState(user.Id, { DepartmentId: Number(value) });
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }}
         />
       );
     },
@@ -132,6 +141,10 @@ export const columns = (
           type="checkbox"
           checked={user.KeyUser}
           onChange={(value) => {
+            if (user.isNew) {
+              updateUserState(user.Id, { KeyUser: Boolean(value) });
+              return;
+            }
             updateUser(user.Id, { KeyUser: Boolean(value) }).then((data) =>
               console.log(data)
             );
@@ -139,6 +152,37 @@ export const columns = (
           }}
         />
       );
+    },
+  },
+  {
+    accessorKey: "Actions",
+    header: "Actions",
+    cell: (row) => {
+      const user = row.row.original;
+
+      if (user.isNew) {
+        return (
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                console.log(user);
+                console.log(row.row.original);
+                handleSaveNewUser(user);
+              }}
+              className="bg-green-500 text-white px-2 py-1 rounded"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => handleCancelNewUser(user.Id)}
+              className="bg-red-500 text-white px-2 py-1 rounded"
+            >
+              Cancel
+            </button>
+          </div>
+        );
+      }
+      return null; // No actions for existing rows
     },
   },
 ];

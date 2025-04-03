@@ -10,7 +10,7 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-  const { account } = useContext(UserContext);
+  // const { account } = useContext(UserContext);
 
   useEffect(() => {}, []);
 
