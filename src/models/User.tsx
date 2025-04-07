@@ -106,29 +106,8 @@ export const columns = (
   {
     accessorKey: "DepartmentId",
     header: "Department ID",
-    cell: (row) => {
-      const user = row.row.original;
-      return (
-        <EditableCell
-          type="text"
-          value={row.getValue() as number}
-          onBlur={(value) => {
-            if (user.isNew) {
-              updateUserState(user.Id, { DepartmentId: Number(value) });
-              return;
-            }
-            updateUser(user.Id, { DepartmentId: Number(value) })
-              .then((data) => {
-                console.log(data);
-                updateUserState(user.Id, { DepartmentId: Number(value) });
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          }}
-        />
-      );
-    },
+    cell: ({ getValue }) => <span>{String(getValue())}</span>,
+
   },
   {
     accessorKey: "KeyUser",
