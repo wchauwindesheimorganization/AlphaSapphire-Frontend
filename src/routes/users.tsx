@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DataTable } from "../components/Datatable";
-import { User, columns as usercolumns } from "../models/User";
+import { User } from "@/models/User";
+import { usercolumns } from "@/models/Columndefinitions/UserColumns";
 import { getUsers } from "../api/userApi";
 import { useState, useEffect, useContext } from "react";
 import { createUser } from "../api/userApi";
@@ -23,7 +24,14 @@ function RouteComponent() {
       setUsers(res);
     });
   }, []);
+  const validEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email)
+  }
+  const arcadisEmail = (email: string) => {
 
+    return email.split("@")[1] == "arcadis.com"
+  }
   const updateUserState = (id: number, updatedFields: Partial<User>) => {
     setUsers((prevUsers) =>
       prevUsers.map((user) =>
@@ -49,6 +57,31 @@ function RouteComponent() {
   const handleSaveNewUser = async (newUser: EditableUser) => {
     try {
       const { isNew, ...sanitizedUser } = newUser;
+      console.log(sanitizedUser)
+      const usererrors = [];
+      if (sanitizedUser.FirstName === '') {
+        usererrors.push("First name is required");
+      }
+      if (sanitizedUser.LastName === '') {
+        usererrors.push("Last name is required");
+      }
+      if (sanitizedUser.Email === '') {
+        usererrors.push("Email is required");
+      }
+      if (!sanitizedUser.DepartmentId) {
+        usererrors.push("Department Id is empty, contact app administrator");
+      }
+      if (!validEmail(sanitizedUser.Email)) {
+        usererrors.push("Must be valid email");
+      }
+      if (!arcadisEmail(sanitizedUser.Email)) {
+        usererrors.push("Email must belong to the '@arcadis.com' domain");
+      }
+      if (usererrors.length > 0) {
+        const error = new Error("An error occurred!") as Error & { response?: { data: Array<string> } };
+        error.response = { data: usererrors };
+        throw error;
+      }
       const addedUser = await createUser(sanitizedUser);
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
@@ -77,6 +110,7 @@ function RouteComponent() {
     setIsAdding(false);
   };
   console.log(errors);
+  console.log(account)
   return (
     <>
       <h2>Users</h2>

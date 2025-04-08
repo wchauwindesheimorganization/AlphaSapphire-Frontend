@@ -41,9 +41,9 @@ vi.mock("@azure/msal-react", () => ({
   useMsal: vi.fn(() => ({
     instance: {
       logout: vi.fn(),
-      getAllAccounts: vi.fn(() => [{ name: "Roks, Mart" }]),
+      getAllAccounts: vi.fn(() => [{ name: "Roks, Mart", DepartmentId: 1 }]),
       getActiveAccount: vi.fn(() => {
-        return [{ name: "Roks, Mart" }];
+        return [{ name: "Roks, Mart", DepartmentId: 1 }];
       }),
     },
   })),
@@ -75,7 +75,7 @@ describe("Users Route", () => {
         FirstName: "testfirstname",
         LastName: "testlastname",
         Email: "testemail",
-        DepartmentId: "testdepartmentid",
+        DepartmentId: "testdepartment1",
         KeyUser: false,
       },
       {
@@ -83,7 +83,7 @@ describe("Users Route", () => {
         FirstName: "testfirstname2",
         LastName: "testlastname2",
         Email: "testemail2",
-        DepartmentId: "testdepartmentid2",
+        DepartmentId: "testdepartment2",
         KeyUser: true,
       },
     ]);
@@ -94,7 +94,7 @@ describe("Users Route", () => {
       users.forEach((element: User) => {
         expect(screen.getByDisplayValue(element["FirstName"])).toBeVisible();
         expect(screen.getByDisplayValue(element["LastName"])).toBeVisible();
-        expect(screen.getByDisplayValue(element["DepartmentId"])).toBeVisible();
+        expect(screen.getByText(element["DepartmentId"])).toBeVisible();
         expect(screen.getByDisplayValue(element["Email"])).toBeVisible();
       });
       const checkboxes = screen.getAllByRole("checkbox");
@@ -108,7 +108,7 @@ describe("Users Route", () => {
     });
     await act(async () => {
       vi.mocked(useContext).mockReturnValue({
-        account: { FirstName: "test" },
+        account: { FirstName: "test", DepartmentId: 1 },
       });
       render(<RouterProvider router={router} />);
 
@@ -152,11 +152,22 @@ describe("Users Route", () => {
     await act(async () => fireEvent.click(saveButton));
     saveButton = await screen.findByText("Save");
     cancelButton = await screen.findByText("Cancel");
+    await waitFor(() => {
+
+      expect(screen.getByText("First name is required")).toBeVisible()
+      expect(screen.getByText("Last name is required")).toBeVisible()
+      expect(screen.getByText("Email is required")).toBeVisible()
+      expect(screen.getByText("Must be valid email")).toBeVisible()
+      expect(screen.getByText("Email must belong to the '@arcadis.com' domain")).toBeVisible()
+      expect(screen.queryByText("Department Id is empty, contact app administrator")).not.toBeInTheDocument()
+
+    })
     await act(async () => {
       fireEvent.click(cancelButton);
     });
-    expect(createUser).toBeCalledTimes(1);
+    expect(createUser).not.toBeCalled();
     expect(saveButton).not.toBeVisible();
     expect(cancelButton).not.toBeVisible();
   });
+
 });
