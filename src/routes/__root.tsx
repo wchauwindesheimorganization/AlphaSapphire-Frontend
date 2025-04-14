@@ -10,7 +10,7 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-  const { account } = useContext(UserContext);
+  // const { account } = useContext(UserContext);
 
   useEffect(() => {}, []);
 
@@ -33,6 +33,14 @@ function RootComponent() {
           }}
         >
           About
+        </Link>
+        <Link
+          to="/users"
+          activeProps={{
+            className: "font-bold",
+          }}
+        >
+          Users
         </Link>
       </div>
       <hr />

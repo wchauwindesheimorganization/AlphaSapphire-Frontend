@@ -1,13 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { render, screen, waitFor } from "@testing-library/react";
-import { routeTree } from "../../src/routeTree.gen";
-import Test from "../../src/components/Test";
-import Provider from "../../src/UserProvider";
+import { routeTree } from "@/routeTree.gen";
+import Provider from "@/UserProvider";
 import { PublicClientApplication } from "@azure/msal-browser";
 import { useMsal } from "@azure/msal-react";
 import "@testing-library/jest-dom";
-import { getActiveUser } from "../../src/api/userApi"; // Adjust the import path as needed
+import { getActiveUser } from "@/api/userApi";
 
 vi.mock("@azure/msal-browser", () => {
   const mockLoginPopup = vi.fn(); // Mock loginPopup method
@@ -24,7 +23,7 @@ vi.mock("@azure/msal-browser", () => {
     })),
   };
 });
-vi.mock("../../src/api/userApi", () => ({
+vi.mock("@/api/userApi", () => ({
   getActiveUser: vi.fn(),
 }));
 // Mock the MSAL React library
@@ -55,7 +54,9 @@ describe("Provider", () => {
 
   it("should render the app if there is an active account", async () => {
     (getActiveUser as ReturnType<typeof vi.fn>).mockResolvedValue({
-      name: "testuser@example.com",
+      account: {
+        name: "testuser@example.com",
+      },
     });
     (useMsal as ReturnType<typeof vi.fn>).mockReturnValue({
       instance: {
@@ -97,14 +98,13 @@ describe("Provider", () => {
   });
   it("should not query the API if there is no MSAL account", async () => {
     const { instance } = useMsal();
-    console.log(
-      (useMsal as ReturnType<typeof vi.fn>).mockReturnValue({
-        instance: {
-          logout: vi.fn(),
-          getActiveAccount: vi.fn().mockReturnValue(null),
-        },
-      })
-    );
+
+    (useMsal as ReturnType<typeof vi.fn>).mockReturnValue({
+      instance: {
+        logout: vi.fn(),
+        getActiveAccount: vi.fn().mockReturnValue(null),
+      },
+    });
 
     render(<Provider children={<p>test</p>} />);
     await waitFor(() => {
