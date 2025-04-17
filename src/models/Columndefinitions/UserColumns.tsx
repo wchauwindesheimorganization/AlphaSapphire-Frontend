@@ -1,27 +1,45 @@
-import { useState } from "react";
 import { EditableCell } from "@/components/ui/EditableCell";
 import { ColumnDef } from "@tanstack/react-table";
-import { updateUser } from "@/api/userApi";
+import { assignMandate, unassignMandate, updateUser } from "@/api/userApi";
 import { User } from "@/models/User";
-
-
+import Select from 'react-select'
+import { Mandate } from "@/models/Mandate";
+import MultiselectTooltip from "@/components/ui/MultiselectTooltip";
+import Multiselect from "@/components/Multiselect";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/Dialog"
+import MandateDialog from "@/components/MandateDialog";
 export const usercolumns = (
     updateUserState: (id: number, updatedFields: Partial<User>) => void,
     handleSaveNewUser: (newUser: User) => void,
-    handleCancelNewUser: (id: number) => void
+    handleCancelNewUser: (id: number) => void,
+    handlePatchUser: (id: number, user: Partial<User>) => void,
+    mandates: Mandate[]
 ): ColumnDef<User & { isNew?: boolean }>[] => [
         {
             accessorKey: "Id",
             header: "ID",
-            cell: ({ getValue }) => <span>{String(getValue())}</span>,
+            cell: (row) => {
+                const user = row.row.original;
+                return <MandateDialog row={row} mandates={mandates} user={user} updateUserState={updateUserState} assignMandate={assignMandate} unassignMandate={unassignMandate} />
+            },
         },
         {
             accessorKey: "FirstName",
             header: "First Name",
+
             cell: (row) => {
                 const user = row.row.original;
+
                 return (
                     <EditableCell
+                        key={`_EditableCell_FirstName`}
                         type="text"
                         value={row.getValue() as string}
                         onBlur={(value) => {
@@ -29,14 +47,8 @@ export const usercolumns = (
                                 updateUserState(user.Id, { FirstName: String(value) });
                                 return;
                             }
-                            updateUser(user.Id, { FirstName: String(value) })
-                                .then((data) => {
-                                    console.log(data);
-                                    updateUserState(user.Id, { FirstName: String(value) });
-                                })
-                                .catch((error) => {
-                                    console.log(error);
-                                });
+                            handlePatchUser(user.Id, { FirstName: String(value) })
+
                         }}
                     />
                 );
@@ -57,14 +69,8 @@ export const usercolumns = (
                                 updateUserState(user.Id, { LastName: String(value) });
                                 return;
                             }
-                            updateUser(user.Id, { LastName: String(value) })
-                                .then((data) => {
-                                    console.log(data);
-                                    updateUserState(user.Id, { LastName: String(value) });
-                                })
-                                .catch((error) => {
-                                    console.log(error);
-                                });
+                            handlePatchUser(user.Id, { LastName: String(value) })
+
                         }}
                     />
                 );
@@ -84,14 +90,8 @@ export const usercolumns = (
                                 updateUserState(user.Id, { Email: String(value) });
                                 return;
                             }
-                            updateUser(user.Id, { Email: String(value) })
-                                .then((data) => {
-                                    console.log(data);
-                                    updateUserState(user.Id, { Email: String(value) });
-                                })
-                                .catch((error) => {
-                                    console.log(error);
-                                });
+                            handlePatchUser(user.Id, { Email: String(value) })
+
                         }}
                     />
                 );
@@ -118,10 +118,8 @@ export const usercolumns = (
                                 updateUserState(user.Id, { KeyUser: Boolean(value) });
                                 return;
                             }
-                            updateUser(user.Id, { KeyUser: Boolean(value) }).then((data) =>
-                                console.log(data)
-                            );
-                            updateUserState(user.Id, { KeyUser: Boolean(value) });
+                            handlePatchUser(user.Id, { KeyUser: Boolean(value) })
+
                         }}
                     />
                 );
@@ -158,4 +156,14 @@ export const usercolumns = (
                 return null; // No actions for existing rows
             },
         },
+        {
+            header: "Mandates",
+            cell: (row) => {
+                const user = row.row.original;
+                return <Multiselect row={row} mandates={mandates} user={user} updateUserState={updateUserState} assignMandate={assignMandate} unassignMandate={unassignMandate}
+                // key={`${user.Id}_${user.Mandates.length}`}
+                />
+
+            }
+        }
     ];

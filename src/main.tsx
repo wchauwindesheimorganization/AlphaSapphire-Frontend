@@ -24,7 +24,10 @@ declare module "@tanstack/react-router" {
     router: typeof router;
   }
 }
-
+const silentRequest = {
+  scopes: ["access_as_user"],
+  loginHint: "user@contoso.com"
+};
 msalInstance.initialize().then(() => {
   // Account selection logic is app dependent. Adjust as needed for different use cases.
   const accounts = msalInstance.getAllAccounts();

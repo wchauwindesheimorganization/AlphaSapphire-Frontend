@@ -12,7 +12,7 @@ export const Route = createRootRoute({
 function RootComponent() {
   // const { account } = useContext(UserContext);
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   return (
     <>
@@ -41,6 +41,14 @@ function RootComponent() {
           }}
         >
           Users
+        </Link>
+        <Link
+          to="/mandates"
+          activeProps={{
+            className: "font-bold",
+          }}
+        >
+          Mandates
         </Link>
       </div>
       <hr />

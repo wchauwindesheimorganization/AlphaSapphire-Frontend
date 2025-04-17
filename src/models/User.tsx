@@ -1,3 +1,4 @@
+import { Mandate } from "./Mandate";
 
 export type User = {
   Id: number; // Assuming Id is a numeric identifier
@@ -6,4 +7,5 @@ export type User = {
   KeyUser: boolean; // Indicates if the user is a key user
   FirstName: string; // User's first name
   LastName: string; // User's last name
+  Mandates: Mandate[];
 };

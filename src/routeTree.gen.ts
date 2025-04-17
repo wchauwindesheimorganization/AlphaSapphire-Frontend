@@ -12,6 +12,8 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as UsersImport } from './routes/users'
+import { Route as UsermandateImport } from './routes/usermandate'
+import { Route as MandatesImport } from './routes/mandates'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 
@@ -20,6 +22,18 @@ import { Route as IndexImport } from './routes/index'
 const UsersRoute = UsersImport.update({
   id: '/users',
   path: '/users',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const UsermandateRoute = UsermandateImport.update({
+  id: '/usermandate',
+  path: '/usermandate',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MandatesRoute = MandatesImport.update({
+  id: '/mandates',
+  path: '/mandates',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -53,6 +67,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
+    '/mandates': {
+      id: '/mandates'
+      path: '/mandates'
+      fullPath: '/mandates'
+      preLoaderRoute: typeof MandatesImport
+      parentRoute: typeof rootRoute
+    }
+    '/usermandate': {
+      id: '/usermandate'
+      path: '/usermandate'
+      fullPath: '/usermandate'
+      preLoaderRoute: typeof UsermandateImport
+      parentRoute: typeof rootRoute
+    }
     '/users': {
       id: '/users'
       path: '/users'
@@ -68,12 +96,16 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/mandates': typeof MandatesRoute
+  '/usermandate': typeof UsermandateRoute
   '/users': typeof UsersRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/mandates': typeof MandatesRoute
+  '/usermandate': typeof UsermandateRoute
   '/users': typeof UsersRoute
 }
 
@@ -81,27 +113,33 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/mandates': typeof MandatesRoute
+  '/usermandate': typeof UsermandateRoute
   '/users': typeof UsersRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/users'
+  fullPaths: '/' | '/about' | '/mandates' | '/usermandate' | '/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/users'
-  id: '__root__' | '/' | '/about' | '/users'
+  to: '/' | '/about' | '/mandates' | '/usermandate' | '/users'
+  id: '__root__' | '/' | '/about' | '/mandates' | '/usermandate' | '/users'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  MandatesRoute: typeof MandatesRoute
+  UsermandateRoute: typeof UsermandateRoute
   UsersRoute: typeof UsersRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  MandatesRoute: MandatesRoute,
+  UsermandateRoute: UsermandateRoute,
   UsersRoute: UsersRoute,
 }
 
@@ -117,6 +155,8 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
+        "/mandates",
+        "/usermandate",
         "/users"
       ]
     },
@@ -125,6 +165,12 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.tsx"
+    },
+    "/mandates": {
+      "filePath": "mandates.tsx"
+    },
+    "/usermandate": {
+      "filePath": "usermandate.tsx"
     },
     "/users": {
       "filePath": "users.tsx"
