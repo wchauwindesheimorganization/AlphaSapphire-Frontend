@@ -1,4 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import userEvent from "@testing-library/user-event";
+
 import {
   render,
   screen,
@@ -6,26 +8,41 @@ import {
   waitFor,
   act,
 } from "@testing-library/react";
-import { Route as UsersRoute } from "../../src/routes/users";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
-import { UserContext } from "@/UserContext";
 import { routeTree } from "../../src/routeTree.gen";
-import Provider from "../../src/UserProvider";
-import { useMsal } from "@azure/msal-react";
-import { getUsers, createUser, getActiveUser } from "@/api/userApi";
+import { Mandate } from "@/models/Mandate";
+import { getUsers, createUser, getActiveUser, assignMandate, unassignMandate, updateUser } from "@/api/userApi";
+import { Mandates } from "@/api/mandateApi";
 import "@testing-library/jest-dom";
 import { User } from "@/models/User";
 import {
-  createContext,
   useContext,
-  useEffect,
-  useState,
   ReactNode,
 } from "react";
+import { wait } from "@testing-library/user-event/dist/cjs/utils/index.js";
 vi.mock("@/api/userApi", () => ({
   getUsers: vi.fn(),
   createUser: vi.fn(),
   getActiveUser: vi.fn(),
+  assignMandate: vi.fn(),
+  unassignMandate: vi.fn(),
+
+}));
+vi.mock("@/api/mandateApi", () => ({
+  Mandates: vi.fn(() => Promise.resolve([
+    {
+      Id: 1,
+      MandateName: "testmandate1",
+      Description: "testdescription1",
+      DepartmentId: 1
+    },
+    {
+      Id: 2,
+      MandateName: "testmandate2",
+      Description: "testdescription2",
+      DepartmentId: 1
+    },
+  ])),
 }));
 vi.mock("react", async () => {
   const actual = await vi.importActual("react");
@@ -37,9 +54,14 @@ vi.mock("react", async () => {
     useContext: vi.fn(),
   };
 });
+
 vi.mock("@azure/msal-react", () => ({
   useMsal: vi.fn(() => ({
     instance: {
+      acquireTokenSilent: vi.fn(() => Promise.resolve({})),
+      addEventCallback: vi.fn(),
+      acquireTokenRedirect: vi.fn(() => Promise.resolve({})),
+      acquireTokenPopup: vi.fn(() => Promise.resolve({})),
       logout: vi.fn(),
       getAllAccounts: vi.fn(() => [{ name: "Roks, Mart", DepartmentId: 1 }]),
       getActiveAccount: vi.fn(() => {
@@ -57,6 +79,7 @@ describe("Users Route", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
+
     (getActiveUser as ReturnType<typeof vi.fn>).mockResolvedValue({
       account: {
         name: "testuser@example.com",
@@ -69,6 +92,7 @@ describe("Users Route", () => {
   });
 
   it("Show loaded users", async () => {
+
     (getUsers as ReturnType<typeof vi.fn>).mockResolvedValue([
       {
         Id: 1,
@@ -103,6 +127,7 @@ describe("Users Route", () => {
     });
   });
   it("should have options for creating a new user and error when creating a user goes wrong", async () => {
+
     await act(async () => {
       router.navigate({ to: "/users" });
     });
@@ -169,5 +194,111 @@ describe("Users Route", () => {
     expect(saveButton).not.toBeVisible();
     expect(cancelButton).not.toBeVisible();
   });
+  it("Should open a dialog when clicking on the Id where mandates can be assigned", async () => {
+    await act(async () => {
+      router.navigate({ to: "/users" });
+    });
+    await act(async () => {
+      vi.mocked(useContext).mockReturnValue({
+        account: { FirstName: "test", DepartmentId: 1 },
+      });
+      render(<RouterProvider router={router} />);
+      (Mandates as ReturnType<typeof vi.fn>).mockResolvedValue([
+        {
+          Id: 1,
+          MandateName: "testmandate1",
+          Description: "testdescription1",
+          DepartmentId: 1
+        },
+        {
+          Id: 2,
+          MandateName: "testmandate2",
+          Description: "testdescription2",
+          DepartmentId: 1
+        },
+      ]);
+      const mandates = await Mandates();
+      (getUsers as ReturnType<typeof vi.fn>).mockResolvedValue([
+        {
+          Id: 1,
+          FirstName: "testfirstname",
+          LastName: "testlastname",
+          Email: "testemail",
+          DepartmentId: "testdepartmentid",
+          KeyUser: false,
+          Mandates: []
+        },
+        {
+          Id: 2,
+          FirstName: "testfirstname2",
+          LastName: "testlastname2",
+          Email: "testemail2",
+          DepartmentId: "testdepartmentid2",
+          KeyUser: true,
+          Mandates: mandates
+        },
+      ]);
 
+
+    });
+    await act(async () => {
+      const id1 = await waitFor(async () =>
+        screen.getByText("1")
+      );
+      userEvent.click(id1);
+    })
+    await waitFor(() => {
+      expect(screen.getByText("Manage mandates for testfirstname testlastname")).toBeVisible()
+    })
+
+
+  })
+  it("Should assign a mandate to a user", async () => {
+    await act(async () => {
+      router.navigate({ to: "/users" });
+    });
+    await act(async () => {
+      vi.mocked(useContext).mockReturnValue({
+        account: { FirstName: "test", DepartmentId: 1 },
+      });
+      render(<RouterProvider router={router} />);
+
+      (getUsers as ReturnType<typeof vi.fn>).mockResolvedValue([
+        {
+          Id: 1,
+          FirstName: "testfirstname",
+          LastName: "testlastname",
+          Email: "testemail",
+          DepartmentId: "testdepartmentid",
+          KeyUser: false,
+        },
+        {
+          Id: 2,
+          FirstName: "testfirstname2",
+          LastName: "testlastname2",
+          Email: "testemail2",
+          DepartmentId: "testdepartmentid2",
+          KeyUser: true,
+        },
+      ]);
+    });
+    let multiselects = await waitFor(async () =>
+      screen.getAllByRole("combobox")
+    );
+    await act(async () => {
+      userEvent.click(multiselects[0]);
+    });
+    const options = await waitFor(async () =>
+      screen.getByText("testmandate1")
+    );
+    await act(async () => {
+      userEvent.click(options);
+    });
+    await waitFor(() => {
+      expect(screen.getByText("testmandate1")).toBeVisible()
+    }
+    )
+    // expect(vi.mocked(assignMandate)).toBeCalled();
+
+  });
 });

@@ -136,8 +136,7 @@ export const usercolumns = (
                         <div className="flex gap-2">
                             <button
                                 onClick={() => {
-                                    console.log(user);
-                                    console.log(row.row.original);
+
                                     handleSaveNewUser(user);
                                 }}
                                 className="bg-green-500 text-white px-2 py-1 rounded"

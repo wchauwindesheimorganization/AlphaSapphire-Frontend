@@ -17,6 +17,7 @@ vi.mock("@azure/msal-browser", () => {
     PublicClientApplication: vi.fn().mockImplementation(() => ({
       initialize: vi.fn().mockResolvedValue(undefined), // Mock initialize
       loginPopup: mockLoginPopup, // Attach mock loginPopup
+      addEventCallback: vi.fn(),
       acquireTokenSilent: mockAcquireTokenSilent, // Attach mock acquireTokenSilent
       getAllAccounts: mockGetAllAccounts, // Attach mock getAllAccounts
       getActiveAccount: mockGetActiveAccount, // Mock getActiveAccount method

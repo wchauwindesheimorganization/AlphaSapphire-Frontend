@@ -31,12 +31,13 @@ const silentRequest = {
 msalInstance.initialize().then(() => {
   // Account selection logic is app dependent. Adjust as needed for different use cases.
   const accounts = msalInstance.getAllAccounts();
-  if (accounts.length == 1) {
+  if (accounts && accounts.length == 1) {
     msalInstance.setActiveAccount(accounts[0]);
   } else {
     msalInstance.loginPopup();
   }
 
+  console.log(msalInstance)
   msalInstance.addEventCallback((event: EventMessage) => {
     if (event.eventType === EventType.LOGIN_SUCCESS && event.payload) {
       const payload = event.payload as AuthenticationResult;
@@ -46,7 +47,7 @@ msalInstance.initialize().then(() => {
     }
   });
   const rootElement = document.getElementById("app")!;
-  if (!rootElement.innerHTML) {
+  if (rootElement && !rootElement.innerHTML) {
     const root = ReactDOM.createRoot(rootElement);
     root.render(
       <MsalProvider instance={msalInstance}>
