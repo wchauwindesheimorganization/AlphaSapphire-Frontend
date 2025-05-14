@@ -1,11 +1,6 @@
 import { EditableCell } from "@/components/ui/EditableCell";
 import { ColumnDef } from "@tanstack/react-table";
-import { createMandate, updateMandate } from "@/api/mandateApi";
-import Select from 'react-select'
-import { Mandate } from "@/models/Mandate";
-import MultiselectTooltip from "@/components/ui/MultiselectTooltip";
-import { Key } from "lucide-react";
-
+import { Mandate } from "@/models/entities/Mandate";
 export const mandatecolumns = (
     updateMandateState: (id: number, updatedFields: Partial<Mandate>) => void,
     handleSaveNewMandate: (newMandate: Mandate) => void,

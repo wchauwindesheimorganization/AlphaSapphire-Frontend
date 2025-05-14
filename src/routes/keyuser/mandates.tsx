@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { DataTable } from "../components/Datatable";
+import { DataTable } from "../../components/Datatable";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "@/UserContext";
 import { mandatecolumns } from "@/models/Columndefinitions/MandateColumns";
-import { Mandate } from "@/models/Mandate";
-import { createMandate, Mandates, updateMandate } from "@/api/mandateApi";
-export const Route = createFileRoute("/mandates")({
+import { Mandate } from "@/models/entities/Mandate";
+import { createMandate, getMandates, updateMandate } from "@/api/mandateApi";
+export const Route = createFileRoute("/keyuser/mandates")({
   component: RouteComponent,
 });
 
@@ -19,7 +19,7 @@ function RouteComponent() {
     { id: number; errormessage: string }[] | null
   >();
   useEffect(() => {
-    Mandates().then(data => setMandates(data));
+    getMandates().then(data => setMandates(data));
 
 
   }, []);
@@ -37,7 +37,7 @@ function RouteComponent() {
       ...prevMandates,
       {
         Id: 0,
-        DepartmentId: account.DepartmentId,
+        DepartmentId: account.DepartmentId!,
         MandateName: "",
         Description: "",
         isNew: true, // Flag to indicate this is a new row

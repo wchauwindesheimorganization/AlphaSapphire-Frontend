@@ -11,29 +11,21 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as UsersImport } from './routes/users'
-import { Route as UsermandateImport } from './routes/usermandate'
-import { Route as MandatesImport } from './routes/mandates'
+import { Route as TestImport } from './routes/test'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
+import { Route as ProjectsIndexImport } from './routes/projects/index'
+import { Route as ProjectsProjectidImport } from './routes/projects/$projectid_'
+import { Route as KeyuserUsersImport } from './routes/keyuser/users'
+import { Route as KeyuserMandatesImport } from './routes/keyuser/mandates'
+import { Route as AdministratorUsersImport } from './routes/administrator/users'
+import { Route as ProjectsProjectidSubprojectsSubprojectidImport } from './routes/projects/$projectid/subprojects/$subprojectid'
 
 // Create/Update Routes
 
-const UsersRoute = UsersImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const UsermandateRoute = UsermandateImport.update({
-  id: '/usermandate',
-  path: '/usermandate',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const MandatesRoute = MandatesImport.update({
-  id: '/mandates',
-  path: '/mandates',
+const TestRoute = TestImport.update({
+  id: '/test',
+  path: '/test',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -48,6 +40,43 @@ const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any)
+
+const ProjectsIndexRoute = ProjectsIndexImport.update({
+  id: '/projects/',
+  path: '/projects/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProjectsProjectidRoute = ProjectsProjectidImport.update({
+  id: '/projects/$projectid_',
+  path: '/projects/$projectid',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const KeyuserUsersRoute = KeyuserUsersImport.update({
+  id: '/keyuser/users',
+  path: '/keyuser/users',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const KeyuserMandatesRoute = KeyuserMandatesImport.update({
+  id: '/keyuser/mandates',
+  path: '/keyuser/mandates',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdministratorUsersRoute = AdministratorUsersImport.update({
+  id: '/administrator/users',
+  path: '/administrator/users',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProjectsProjectidSubprojectsSubprojectidRoute =
+  ProjectsProjectidSubprojectsSubprojectidImport.update({
+    id: '/projects/$projectid/subprojects/$subprojectid',
+    path: '/projects/$projectid/subprojects/$subprojectid',
+    getParentRoute: () => rootRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -67,25 +96,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
-    '/mandates': {
-      id: '/mandates'
-      path: '/mandates'
-      fullPath: '/mandates'
-      preLoaderRoute: typeof MandatesImport
+    '/test': {
+      id: '/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof TestImport
       parentRoute: typeof rootRoute
     }
-    '/usermandate': {
-      id: '/usermandate'
-      path: '/usermandate'
-      fullPath: '/usermandate'
-      preLoaderRoute: typeof UsermandateImport
+    '/administrator/users': {
+      id: '/administrator/users'
+      path: '/administrator/users'
+      fullPath: '/administrator/users'
+      preLoaderRoute: typeof AdministratorUsersImport
       parentRoute: typeof rootRoute
     }
-    '/users': {
-      id: '/users'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof UsersImport
+    '/keyuser/mandates': {
+      id: '/keyuser/mandates'
+      path: '/keyuser/mandates'
+      fullPath: '/keyuser/mandates'
+      preLoaderRoute: typeof KeyuserMandatesImport
+      parentRoute: typeof rootRoute
+    }
+    '/keyuser/users': {
+      id: '/keyuser/users'
+      path: '/keyuser/users'
+      fullPath: '/keyuser/users'
+      preLoaderRoute: typeof KeyuserUsersImport
+      parentRoute: typeof rootRoute
+    }
+    '/projects/$projectid_': {
+      id: '/projects/$projectid_'
+      path: '/projects/$projectid'
+      fullPath: '/projects/$projectid'
+      preLoaderRoute: typeof ProjectsProjectidImport
+      parentRoute: typeof rootRoute
+    }
+    '/projects/': {
+      id: '/projects/'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/projects/$projectid/subprojects/$subprojectid': {
+      id: '/projects/$projectid/subprojects/$subprojectid'
+      path: '/projects/$projectid/subprojects/$subprojectid'
+      fullPath: '/projects/$projectid/subprojects/$subprojectid'
+      preLoaderRoute: typeof ProjectsProjectidSubprojectsSubprojectidImport
       parentRoute: typeof rootRoute
     }
   }
@@ -96,51 +153,100 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/mandates': typeof MandatesRoute
-  '/usermandate': typeof UsermandateRoute
-  '/users': typeof UsersRoute
+  '/test': typeof TestRoute
+  '/administrator/users': typeof AdministratorUsersRoute
+  '/keyuser/mandates': typeof KeyuserMandatesRoute
+  '/keyuser/users': typeof KeyuserUsersRoute
+  '/projects/$projectid': typeof ProjectsProjectidRoute
+  '/projects': typeof ProjectsIndexRoute
+  '/projects/$projectid/subprojects/$subprojectid': typeof ProjectsProjectidSubprojectsSubprojectidRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/mandates': typeof MandatesRoute
-  '/usermandate': typeof UsermandateRoute
-  '/users': typeof UsersRoute
+  '/test': typeof TestRoute
+  '/administrator/users': typeof AdministratorUsersRoute
+  '/keyuser/mandates': typeof KeyuserMandatesRoute
+  '/keyuser/users': typeof KeyuserUsersRoute
+  '/projects/$projectid': typeof ProjectsProjectidRoute
+  '/projects': typeof ProjectsIndexRoute
+  '/projects/$projectid/subprojects/$subprojectid': typeof ProjectsProjectidSubprojectsSubprojectidRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/mandates': typeof MandatesRoute
-  '/usermandate': typeof UsermandateRoute
-  '/users': typeof UsersRoute
+  '/test': typeof TestRoute
+  '/administrator/users': typeof AdministratorUsersRoute
+  '/keyuser/mandates': typeof KeyuserMandatesRoute
+  '/keyuser/users': typeof KeyuserUsersRoute
+  '/projects/$projectid_': typeof ProjectsProjectidRoute
+  '/projects/': typeof ProjectsIndexRoute
+  '/projects/$projectid/subprojects/$subprojectid': typeof ProjectsProjectidSubprojectsSubprojectidRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/mandates' | '/usermandate' | '/users'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/test'
+    | '/administrator/users'
+    | '/keyuser/mandates'
+    | '/keyuser/users'
+    | '/projects/$projectid'
+    | '/projects'
+    | '/projects/$projectid/subprojects/$subprojectid'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/mandates' | '/usermandate' | '/users'
-  id: '__root__' | '/' | '/about' | '/mandates' | '/usermandate' | '/users'
+  to:
+    | '/'
+    | '/about'
+    | '/test'
+    | '/administrator/users'
+    | '/keyuser/mandates'
+    | '/keyuser/users'
+    | '/projects/$projectid'
+    | '/projects'
+    | '/projects/$projectid/subprojects/$subprojectid'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/test'
+    | '/administrator/users'
+    | '/keyuser/mandates'
+    | '/keyuser/users'
+    | '/projects/$projectid_'
+    | '/projects/'
+    | '/projects/$projectid/subprojects/$subprojectid'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  MandatesRoute: typeof MandatesRoute
-  UsermandateRoute: typeof UsermandateRoute
-  UsersRoute: typeof UsersRoute
+  TestRoute: typeof TestRoute
+  AdministratorUsersRoute: typeof AdministratorUsersRoute
+  KeyuserMandatesRoute: typeof KeyuserMandatesRoute
+  KeyuserUsersRoute: typeof KeyuserUsersRoute
+  ProjectsProjectidRoute: typeof ProjectsProjectidRoute
+  ProjectsIndexRoute: typeof ProjectsIndexRoute
+  ProjectsProjectidSubprojectsSubprojectidRoute: typeof ProjectsProjectidSubprojectsSubprojectidRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  MandatesRoute: MandatesRoute,
-  UsermandateRoute: UsermandateRoute,
-  UsersRoute: UsersRoute,
+  TestRoute: TestRoute,
+  AdministratorUsersRoute: AdministratorUsersRoute,
+  KeyuserMandatesRoute: KeyuserMandatesRoute,
+  KeyuserUsersRoute: KeyuserUsersRoute,
+  ProjectsProjectidRoute: ProjectsProjectidRoute,
+  ProjectsIndexRoute: ProjectsIndexRoute,
+  ProjectsProjectidSubprojectsSubprojectidRoute:
+    ProjectsProjectidSubprojectsSubprojectidRoute,
 }
 
 export const routeTree = rootRoute
@@ -155,9 +261,13 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
-        "/mandates",
-        "/usermandate",
-        "/users"
+        "/test",
+        "/administrator/users",
+        "/keyuser/mandates",
+        "/keyuser/users",
+        "/projects/$projectid_",
+        "/projects/",
+        "/projects/$projectid/subprojects/$subprojectid"
       ]
     },
     "/": {
@@ -166,14 +276,26 @@ export const routeTree = rootRoute
     "/about": {
       "filePath": "about.tsx"
     },
-    "/mandates": {
-      "filePath": "mandates.tsx"
+    "/test": {
+      "filePath": "test.tsx"
     },
-    "/usermandate": {
-      "filePath": "usermandate.tsx"
+    "/administrator/users": {
+      "filePath": "administrator/users.tsx"
     },
-    "/users": {
-      "filePath": "users.tsx"
+    "/keyuser/mandates": {
+      "filePath": "keyuser/mandates.tsx"
+    },
+    "/keyuser/users": {
+      "filePath": "keyuser/users.tsx"
+    },
+    "/projects/$projectid_": {
+      "filePath": "projects/$projectid_.tsx"
+    },
+    "/projects/": {
+      "filePath": "projects/index.tsx"
+    },
+    "/projects/$projectid/subprojects/$subprojectid": {
+      "filePath": "projects/$projectid/subprojects/$subprojectid.tsx"
     }
   }
 }

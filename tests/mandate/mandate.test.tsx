@@ -6,17 +6,12 @@ import {
     waitFor,
     act,
 } from "@testing-library/react";
-import { Route as UsersRoute } from "../../src/routes/users";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
-import { UserContext } from "@/UserContext";
-import { Mandate } from "@/models/Mandate";
+import { Mandate } from "@/models/entities/Mandate";
 import { routeTree } from "../../src/routeTree.gen";
-import Provider from "../../src/UserProvider";
-import { useMsal } from "@azure/msal-react";
 import { getUsers, createUser, getActiveUser, assignMandate, unassignMandate } from "@/api/userApi";
-import { createMandate, Mandates } from "@/api/mandateApi";
+import { createMandate, getMandates } from "@/api/mandateApi";
 import "@testing-library/jest-dom";
-import { User } from "@/models/User";
 import {
     createContext,
     useContext,
@@ -33,7 +28,7 @@ vi.mock("@/api/userApi", () => ({
 
 }));
 vi.mock("@/api/mandateApi", () => ({
-    Mandates: vi.fn(),
+    getMandates: vi.fn(),
     createMandate: vi.fn(),
 }));
 vi.mock("react", async () => {
@@ -85,7 +80,7 @@ describe("Mandate Route", () => {
 
     it("Show loaded mandates", async () => {
 
-        (Mandates as ReturnType<typeof vi.fn>).mockResolvedValue([
+        (getMandates as ReturnType<typeof vi.fn>).mockResolvedValue([
             {
                 Id: 1,
                 MandateName: "testmandate1",
@@ -99,10 +94,10 @@ describe("Mandate Route", () => {
                 DepartmentId: 1
             },
         ]);
-        router.navigate({ to: "/mandates" });
+        router.navigate({ to: "/keyuser/mandates" });
         render(<RouterProvider router={router} />);
         await waitFor(async () => {
-            const mandates = await Mandates();
+            const mandates = await getMandates();
             mandates.forEach((element: Mandate) => {
                 expect(screen.getByDisplayValue(element["MandateName"])).toBeVisible();
                 expect(screen.getByDisplayValue(element["Description"])).toBeVisible();
@@ -113,7 +108,7 @@ describe("Mandate Route", () => {
     it("should have options for creating a new mandate and error when creating a user goes wrong", async () => {
 
         await act(async () => {
-            router.navigate({ to: "/mandates" });
+            router.navigate({ to: "/keyuser/mandates" });
         });
         await act(async () => {
             vi.mocked(useContext).mockReturnValue({
@@ -121,7 +116,7 @@ describe("Mandate Route", () => {
             });
             render(<RouterProvider router={router} />);
 
-            (Mandates as ReturnType<typeof vi.fn>).mockResolvedValue([
+            (getMandates as ReturnType<typeof vi.fn>).mockResolvedValue([
                 {
                     Id: 1,
                     MandateName: "testmandate1",

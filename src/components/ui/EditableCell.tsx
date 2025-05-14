@@ -1,3 +1,4 @@
+import Select from "node_modules/react-select/dist/declarations/src/Select";
 import { useState } from "react";
 import { useEffect } from "react";
 export const EditableCell: React.FC<{
@@ -38,6 +39,7 @@ export const EditableCell: React.FC<{
           onBlur={(e) => {
             const newValue = e.target.value;
             if (newValue !== value) {
+              console.log(newValue, value);
               setValue(newValue);
               onBlur &&
                 onBlur(
@@ -85,6 +87,7 @@ export const EditableCell: React.FC<{
             e.currentTarget.blur();
           }
         }}></textarea>);
+
     default:
       break;
   }

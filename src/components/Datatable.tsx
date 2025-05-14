@@ -3,7 +3,7 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  useReactTable,
+  useReactTable, Row
 } from "@tanstack/react-table";
 
 import {
@@ -17,6 +17,8 @@ import {
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
+  // columns: Row<TData|TValue>[];
+
   data: TData[];
 }
 

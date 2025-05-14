@@ -1,4 +1,4 @@
-import { Mandate } from "@/models/Mandate"
+import { Mandate } from "@/models/entities/Mandate"
 import { OptionProps } from "react-select"
 import { Tooltip as ReactTooltip } from "react-tooltip";
 

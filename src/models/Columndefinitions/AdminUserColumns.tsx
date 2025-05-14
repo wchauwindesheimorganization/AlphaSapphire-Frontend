@@ -1,46 +1,45 @@
 import { EditableCell } from "@/components/ui/EditableCell";
-import { Row } from "@tanstack/react-table";
-import { assignMandate, unassignMandate } from "@/api/userApi";
 import { User } from "@/models/entities/User";
 import { Mandate } from "@/models/entities/Mandate";
-import MandateDialog from "@/components/MandateDialog";
+import DepartmentSelect from "@/components/DepartmentSelect";
 import { Department } from "@/models/entities/Department";
-export const usercolumns = ({
+import { CellContext, ColumnDef, Row } from "@tanstack/react-table";
+export const adminusercolumns = ({
     updateUserState,
     handleSaveNewUser,
     handleCancelNewUser,
     handlePatchUser,
     mandates,
-}
+    departments }
     : {
         updateUserState: ((id: number, updatedFields: Partial<User & { isNew?: boolean }>) => void),
         handleSaveNewUser: ((newUser: User & { isNew?: boolean }) => void),
         handleCancelNewUser: ((id: number) => void),
         handlePatchUser: ((id: number, user: Partial<User & { isNew?: boolean }>) => void),
         mandates: Mandate[],
+        departments: Department[]
     }): any => [
         {
             accessorKey: "Id",
             header: "ID",
             cell: ({ row }: { row: Row<User & { isNew: boolean }> }) => {
+
                 const user = row.original;
-                console.log(user)
-                return <MandateDialog row={row} mandates={mandates} user={user} updateUserState={updateUserState} assignMandate={assignMandate} unassignMandate={unassignMandate} />
+                return <span>{user!.Id}</span>
             },
         },
         {
             accessorKey: "FirstName",
             header: "First Name",
 
-            cell: ({ row, getValue }: { row: Row<User & { isNew: boolean }>, getValue: () => {} }) => {
+            cell: ({ row, getValue }: { row: Row<User & { isNew: boolean }>, getValue: () => string }) => {
                 const user = row.original;
-
                 return (
                     <EditableCell
-
                         type="text"
-                        value={getValue() as string}
+                        value={getValue()}
                         onBlur={(value) => {
+                            console.log(user)
                             if (user.isNew) {
                                 updateUserState(user.Id, { FirstName: String(value) });
                                 return;
@@ -55,13 +54,13 @@ export const usercolumns = ({
         {
             accessorKey: "LastName",
             header: "Last Name",
-            cell: ({ row, getValue }: { row: Row<User & { isNew: boolean }>, getValue: () => string }) => {
+            cell: ({ row, getValue }: { row: Row<User & { isNew?: boolean }>, getValue: () => string }) => {
                 const user = row.original;
 
                 return (
                     <EditableCell
                         type="text"
-                        value={getValue() as string}
+                        value={getValue()}
                         onBlur={(value) => {
                             if (user.isNew) {
                                 updateUserState(user.Id, { LastName: String(value) });
@@ -77,12 +76,12 @@ export const usercolumns = ({
         {
             accessorKey: "Email",
             header: "Email",
-            cell: ({ row, getValue }: { row: Row<User & { isNew: boolean }>, getValue: () => string }) => {
+            cell: ({ row, getValue }: { row: Row<User & { isNew?: boolean }>, getValue: () => string }) => {
                 const user = row.original;
                 return (
                     <EditableCell
                         type="text"
-                        value={getValue() as string}
+                        value={getValue()}
                         onBlur={(value) => {
                             if (user.isNew) {
                                 updateUserState(user.Id, { Email: String(value) });
@@ -96,21 +95,17 @@ export const usercolumns = ({
             },
         },
         {
-            accessorKey: "Department",
-            header: "Department ID",
-            cell: ({ getValue }: { getValue: () => {} }) => {
-
-
-                const userdepartment = getValue() as Department;
-                console.log(userdepartment.DepartmentCode)
-                return <span>{userdepartment.DepartmentCode}</span>
+            accessorKey: "DepartmentId",
+            header: "Department Code",
+            cell: ({ row }: { row: Row<User & { isNew?: boolean }> }) => {
+                const user = row.original;
+                return (<DepartmentSelect departments={departments} user={user} updateUser={updateUserState} ></DepartmentSelect>)
             },
-
         },
         {
             accessorKey: "KeyUser",
             header: "Key User",
-            cell: ({ row, getValue }: { row: Row<User & { isNew: boolean }>, getValue: () => string }) => {
+            cell: ({ row }: { row: Row<User & { isNew?: boolean }> }) => {
                 const user = row.original;
 
                 return (
@@ -118,6 +113,7 @@ export const usercolumns = ({
                         type="checkbox"
                         checked={user.KeyUser}
                         onChange={(value) => {
+                            console.log(value)
                             if (user.isNew) {
                                 updateUserState(user.Id, { KeyUser: Boolean(value) });
                                 return;
@@ -132,7 +128,7 @@ export const usercolumns = ({
         {
             accessorKey: "Actions",
             header: "Actions",
-            cell: ({ row, getValue }: { row: Row<User & { isNew: boolean }>, getValue: () => string }) => {
+            cell: ({ row, getValue }: { row: Row<User & { isNew?: boolean }>, getValue: () => {} }) => {
                 const user = row.original;
 
                 if (user.isNew) {
@@ -140,7 +136,7 @@ export const usercolumns = ({
                         <div className="flex gap-2">
                             <button
                                 onClick={() => {
-
+                                    console.log(user)
                                     handleSaveNewUser(user);
                                 }}
                                 className="bg-green-500 text-white px-2 py-1 rounded"
@@ -161,7 +157,7 @@ export const usercolumns = ({
         },
         {
             header: "Mandates",
-            cell: ({ row, getValue }: { row: Row<User & { isNew: boolean }>, getValue: () => string }) => {
+            cell: ({ row }: { row: Row<User & { isNew?: boolean }> }) => {
                 const user = row.original;
                 return <span className="w-[12vw] block">{user && user.Mandates && user.Mandates.length > 0 && user.Mandates.map(e => e.MandateName).join(", ")}</span>
 

@@ -1,14 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { DataTable } from "../components/Datatable";
-import { User } from "@/models/User";
+import { DataTable } from "../../components/Datatable";
+import { User } from "@/models/entities/User";
 import { usercolumns } from "@/models/Columndefinitions/UserColumns";
-import { getUsers, createUser, assignMandate, updateUser } from "../api/userApi";
+import { getUsers, createUser, assignMandate, updateUser } from "../../api/userApi";
 import { useState, useEffect, useContext, useMemo } from "react";
 import { UserContext } from "@/UserContext";
-import { Mandates } from "@/api/mandateApi";
-import { Mandate } from "@/models/Mandate";
-import { getCoreRowModel } from "@tanstack/react-table";
-export const Route = createFileRoute("/users")({
+import { getMandates } from "@/api/mandateApi";
+import { Mandate } from "@/models/entities/Mandate";
+export const Route = createFileRoute("/keyuser/users")({
   component: RouteComponent,
 });
 
@@ -16,7 +15,7 @@ function RouteComponent() {
   type EditableUser = User & { isNew?: boolean };
   const userContext = useContext(UserContext);
   const account = userContext.account!;
-  const [mandates, setMandates] = useState<Mandate[]>();
+  const [mandates, setMandates] = useState<Mandate[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [isAdding, setIsAdding] = useState(false);
 
@@ -24,7 +23,7 @@ function RouteComponent() {
     { id: number; errormessage: string }[] | null
   >();
   useEffect(() => {
-    Mandates().then(data => setMandates(data));
+    getMandates().then(data => setMandates(data));
 
     getUsers().then((res) => {
       setUsers(res);
@@ -42,7 +41,6 @@ function RouteComponent() {
   }
   const updateUserState = (id: number, updatedFields: Partial<User>) => {
     setUsers((prevUsers) => {
-
       const newusers = prevUsers.map((user) => {
         return user.Id === id ? { ...user, ...updatedFields } : user
       })
@@ -51,6 +49,7 @@ function RouteComponent() {
     }
     );
   };
+  console.log(account)
   const handleAddRow = () => {
     setIsAdding(true);
     setUsers((prevUsers) => [
@@ -60,9 +59,10 @@ function RouteComponent() {
         FirstName: "",
         LastName: "",
         Email: "",
-        DepartmentId: account.DepartmentId,
+        Department: account.Department,
         KeyUser: false,
         Mandates: [],
+        Administrator: false,
         isNew: true, // Flag to indicate this is a new row
       },
     ]);
@@ -102,7 +102,7 @@ function RouteComponent() {
       if (sanitizedUser.Email === '') {
         usererrors.push("Email is required");
       }
-      if (!sanitizedUser.DepartmentId) {
+      if (!sanitizedUser.Department) {
         usererrors.push("Department Id is empty, contact app administrator");
       }
       if (!validEmail(sanitizedUser.Email)) {
@@ -149,7 +149,7 @@ function RouteComponent() {
   };
   const memoizedData = useMemo(() => users, [users]);
   const memoizedMandates = useMemo(() => mandates, [mandates]);
-  const memoizedColumns = useMemo(() => usercolumns(updateUserState, handleSaveNewUser, handleCancelNewUser, handlePatchUser, memoizedMandates as Mandate[]), [memoizedMandates]);
+  const memoizedColumns = useMemo(() => usercolumns({ updateUserState, handleSaveNewUser, handleCancelNewUser, handlePatchUser, mandates }), [memoizedMandates]);
 
   return (
     <>
