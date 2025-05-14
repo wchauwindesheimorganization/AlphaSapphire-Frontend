@@ -1,0 +1,39 @@
+name: Build
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - managemandates
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    name: Build
+    runs-on: pda-self-hosted-linux
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22' # Replace with your desired Node.js version
+
+      # Install dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # Run tests with coverage
+      - name: Run Vitest with Coverage
+        run: npm run test
+
+      # SonarQube Scan
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

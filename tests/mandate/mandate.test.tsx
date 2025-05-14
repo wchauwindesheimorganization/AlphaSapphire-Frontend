@@ -42,21 +42,23 @@ vi.mock("react", async () => {
     };
 });
 
-vi.mock("@azure/msal-react", () => ({
-    useMsal: vi.fn(() => ({
-        instance: {
-            acquireTokenSilent: vi.fn(() => Promise.resolve({})),
-            acquireTokenRedirect: vi.fn(() => Promise.resolve({})),
+vi.mock("@azure/msal-browser", () => {
+    const mockLoginPopup = vi.fn(); // Mock loginPopup method
+    const mockAcquireTokenSilent = vi.fn(); // Mock acquireTokenSilent method
+    const mockGetAllAccounts = vi.fn(); // Mock getAllAccounts method
+    const mockGetActiveAccount = vi.fn();
+    return {
+        PublicClientApplication: vi.fn().mockImplementation(() => ({
+            initialize: vi.fn().mockResolvedValue(undefined), // Mock initialize
+            loginPopup: mockLoginPopup, // Attach mock loginPopup
             addEventCallback: vi.fn(),
-            acquireTokenPopup: vi.fn(() => Promise.resolve({})),
-            logout: vi.fn(),
-            getAllAccounts: vi.fn(() => [{ name: "Roks, Mart", DepartmentId: 1 }]),
-            getActiveAccount: vi.fn(() => {
-                return [{ name: "Roks, Mart", DepartmentId: 1 }];
-            }),
-        },
-    })),
-}));
+            acquireTokenSilent: mockAcquireTokenSilent, // Attach mock acquireTokenSilent
+            getAllAccounts: mockGetAllAccounts, // Attach mock getAllAccounts
+            getActiveAccount: mockGetActiveAccount, // Mock getActiveAccount method
+        })),
+    };
+});
+
 describe("Mandate Route", () => {
     let router: ReturnType<typeof createRouter>;
     (useContext as ReturnType<typeof vi.fn>).mockResolvedValue({
