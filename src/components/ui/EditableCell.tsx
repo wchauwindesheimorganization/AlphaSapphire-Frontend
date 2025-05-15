@@ -1,6 +1,4 @@
-import Select from "node_modules/react-select/dist/declarations/src/Select";
 import { useState } from "react";
-import { useEffect } from "react";
 export const EditableCell: React.FC<{
   value?: string | number | readonly string[] | boolean | undefined;
   onChange?: (
@@ -39,7 +37,7 @@ export const EditableCell: React.FC<{
           onBlur={(e) => {
             const newValue = e.target.value;
             if (newValue !== value) {
-              console.log(newValue, value);
+
               setValue(newValue);
               onBlur &&
                 onBlur(
@@ -83,7 +81,6 @@ export const EditableCell: React.FC<{
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            console.log("enter");
             e.currentTarget.blur();
           }
         }}></textarea>);

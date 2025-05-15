@@ -10,7 +10,7 @@ export default function DepartmentSelect({ departments, user, updateUser }: { de
     return (<Select options={departments}
         defaultValue={user.Department}
         getOptionLabel={(e) => e.DepartmentCode.toString()} getOptionValue={e => e.DepartmentCode.toString()} onChange={(e) => {
-            console.log(e)
+
             if (user.isNew) {
                 updateUser(user.Id, { DepartmentId: e?.Id })
                 return;

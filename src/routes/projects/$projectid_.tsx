@@ -11,7 +11,7 @@ export const Route = createFileRoute('/projects/$projectid_')({
 function RouteComponent() {
   const { projectid }: { projectid: number } = Route.useParams()
   const [project, setProject] = useState<Project>()
-  console.log(project?.Subprojects)
+
   useEffect(() => {
     getProject({ id: projectid }).then((res) => {
       setProject(res)

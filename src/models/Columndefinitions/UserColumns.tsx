@@ -24,7 +24,7 @@ export const usercolumns = ({
             header: "ID",
             cell: ({ row }: { row: Row<User & { isNew: boolean }> }) => {
                 const user = row.original;
-                console.log(user)
+
                 return <MandateDialog row={row} mandates={mandates} user={user} updateUserState={updateUserState} assignMandate={assignMandate} unassignMandate={unassignMandate} />
             },
         },
@@ -99,7 +99,6 @@ export const usercolumns = ({
             accessorKey: "Department",
             header: "Department ID",
             cell: ({ getValue }: { getValue: () => {} }) => {
-
 
                 const userdepartment = getValue() as Department;
                 console.log(userdepartment.DepartmentCode)

@@ -13,7 +13,7 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   const { account } = useContext(UserContext);
-  console.log(account)
+
 
 
   return (

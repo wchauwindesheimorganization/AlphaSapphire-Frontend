@@ -92,228 +92,233 @@ describe("Users Route", () => {
     });
   });
 
-  // it("Show loaded users", async () => {
+  it("Show loaded users", async () => {
 
-  //   (getUsers as ReturnType<typeof vi.fn>).mockResolvedValue([
-  //     {
-  //       Id: 1,
-  //       FirstName: "testfirstname",
-  //       LastName: "testlastname",
-  //       Email: "testemail",
-  //       DepartmentId: "testdepartment1",
-  //       KeyUser: false,
-  //     },
-  //     {
-  //       Id: 2,
-  //       FirstName: "testfirstname2",
-  //       LastName: "testlastname2",
-  //       Email: "testemail2",
-  //       DepartmentId: "testdepartment2",
-  //       KeyUser: true,
-  //     },
-  //   ]);
-  //   router.navigate({ to: "/keyuser/users" });
-  //   render(<RouterProvider router={router} />);
-  //   await waitFor(async () => {
-  //     const users = await getUsers();
-  //     users.forEach((element: User) => {
-  //       expect(screen.getByDisplayValue(element["FirstName"])).toBeVisible();
-  //       expect(screen.getByDisplayValue(element["LastName"])).toBeVisible();
-  //       expect(screen.getByDisplayValue(element["Email"])).toBeVisible();
-  //     });
-  //     const checkboxes = screen.getAllByRole("checkbox");
-  //     expect(checkboxes[0]).not.toBeChecked;
-  //     expect(checkboxes[1]).toBeChecked();
-  //   });
-  // });
-  // it("should have options for creating a new user and error when creating a user goes wrong", async () => {
+    (getUsers as ReturnType<typeof vi.fn>).mockResolvedValue([
+      {
+        Id: 1,
+        FirstName: "testfirstname",
+        LastName: "testlastname",
+        Email: "testemail",
+        Department: { DepartmentCode: 1 },
+        KeyUser: false,
+      },
+      {
+        Id: 2,
+        FirstName: "testfirstname2",
+        LastName: "testlastname2",
+        Email: "testemail2",
+        Department: { DepartmentCode: 1 },
 
-  //   await act(async () => {
-  //     router.navigate({ to: "/keyuser/users" });
-  //   });
-  //   await act(async () => {
-  //     vi.mocked(useContext).mockReturnValue({
-  //       account: { FirstName: "test", DepartmentId: 1 },
-  //     });
-  //     render(<RouterProvider router={router} />);
+        KeyUser: true,
+      },
+    ]);
+    router.navigate({ to: "/keyuser/users" });
+    render(<RouterProvider router={router} />);
+    await waitFor(async () => {
+      const users = await getUsers();
+      users.forEach((element: User) => {
+        expect(screen.getByDisplayValue(element["FirstName"])).toBeVisible();
+        expect(screen.getByDisplayValue(element["LastName"])).toBeVisible();
+        expect(screen.getByDisplayValue(element["Email"])).toBeVisible();
+      });
+      const checkboxes = screen.getAllByRole("checkbox");
+      expect(checkboxes[0]).not.toBeChecked;
+      expect(checkboxes[1]).toBeChecked();
+    });
+  });
+  it("should have options for creating a new user and error when creating a user goes wrong", async () => {
 
-  //     (getUsers as ReturnType<typeof vi.fn>).mockResolvedValue([
-  //       {
-  //         Id: 1,
-  //         FirstName: "testfirstname",
-  //         LastName: "testlastname",
-  //         Email: "testemail",
-  //         DepartmentId: "testdepartmentid",
-  //         KeyUser: false,
-  //       },
-  //       {
-  //         Id: 2,
-  //         FirstName: "testfirstname2",
-  //         LastName: "testlastname2",
-  //         Email: "testemail2",
-  //         DepartmentId: "testdepartmentid2",
-  //         KeyUser: true,
-  //       },
-  //     ]);
-  //   });
+    await act(async () => {
+      router.navigate({ to: "/keyuser/users" });
+    });
+    await act(async () => {
+      vi.mocked(useContext).mockReturnValue({
+        account: { FirstName: "test", Department: { DepartmentCode: 1 } },
+      });
+      render(<RouterProvider router={router} />);
 
-  //   (createUser as ReturnType<typeof vi.fn>).mockRejectedValue(
-  //     Object.assign(new Error("An error occurred"), {
-  //       response: { data: ["test"] },
-  //     })
-  //   );
-  //   // Find and click the "Add New User" button
-  //   const addNewUserButton = await waitFor(async () =>
-  //     screen.getByText("Add New User")
-  //   );
-  //   await act(async () => {
-  //     fireEvent.click(addNewUserButton); // Example: Simulate a button click
-  //   });
-  //   // Check if the "Save" and "Cancel" buttons are visible in the Actions column
-  //   let saveButton = await screen.findByText("Save");
-  //   let cancelButton = await screen.findByText("Cancel");
-  //   expect(saveButton).toBeVisible();
-  //   expect(cancelButton).toBeVisible();
-  //   await act(async () => fireEvent.click(saveButton));
-  //   saveButton = await screen.findByText("Save");
-  //   cancelButton = await screen.findByText("Cancel");
-  //   await waitFor(() => {
+      (getUsers as ReturnType<typeof vi.fn>).mockResolvedValue([
+        {
+          Id: 1,
+          FirstName: "testfirstname",
+          LastName: "testlastname",
+          Email: "testemail",
+          Department: { DepartmentCode: 1 },
 
-  //     expect(screen.getByText("First name is required")).toBeVisible()
-  //     expect(screen.getByText("Last name is required")).toBeVisible()
-  //     expect(screen.getByText("Email is required")).toBeVisible()
-  //     expect(screen.getByText("Must be valid email")).toBeVisible()
-  //     expect(screen.getByText("Email must belong to the '@arcadis.com' domain")).toBeVisible()
-  //     expect(screen.queryByText("Department Id is empty, contact app administrator")).not.toBeInTheDocument()
+          KeyUser: false,
+        },
+        {
+          Id: 2,
+          FirstName: "testfirstname2",
+          LastName: "testlastname2",
+          Email: "testemail2",
+          Department: { DepartmentCode: 1 },
 
-  //   })
-  //   await act(async () => {
-  //     fireEvent.click(cancelButton);
-  //   });
-  //   expect(createUser).not.toBeCalled();
-  //   expect(saveButton).not.toBeVisible();
-  //   expect(cancelButton).not.toBeVisible();
-  // });
-  // it("Should open a dialog when clicking on the Id where mandates can be assigned", async () => {
-  //   await act(async () => {
-  //     router.navigate({ to: "/keyuser/users" });
-  //   });
-  //   await act(async () => {
-  //     vi.mocked(useContext).mockReturnValue({
-  //       account: { FirstName: "test", DepartmentId: 1 },
-  //     });
-  //     render(<RouterProvider router={router} />);
-  //     (getMandates as ReturnType<typeof vi.fn>).mockResolvedValue([
-  //       {
-  //         Id: 1,
-  //         MandateName: "testmandate1",
-  //         Description: "testdescription1",
-  //         DepartmentId: 1
-  //       },
-  //       {
-  //         Id: 2,
-  //         MandateName: "testmandate2",
-  //         Description: "testdescription2",
-  //         DepartmentId: 1
-  //       },
-  //     ]);
-  //     const mandates = await getMandates();
-  //     (getUsers as ReturnType<typeof vi.fn>).mockResolvedValue([
-  //       {
-  //         Id: 1,
-  //         FirstName: "testfirstname",
-  //         LastName: "testlastname",
-  //         Email: "testemail",
-  //         DepartmentId: "testdepartmentid",
-  //         KeyUser: false,
-  //         Mandates: []
-  //       },
-  //       {
-  //         Id: 2,
-  //         FirstName: "testfirstname2",
-  //         LastName: "testlastname2",
-  //         Email: "testemail2",
-  //         DepartmentId: "testdepartmentid2",
-  //         KeyUser: true,
-  //         Mandates: mandates
-  //       },
-  //     ]);
+          KeyUser: true,
+        },
+      ]);
+    });
 
+    (createUser as ReturnType<typeof vi.fn>).mockRejectedValue(
+      Object.assign(new Error("An error occurred"), {
+        response: { data: ["test"] },
+      })
+    );
+    // Find and click the "Add New User" button
+    const addNewUserButton = await waitFor(async () =>
+      screen.getByText("Add New User")
+    );
+    await act(async () => {
+      fireEvent.click(addNewUserButton); // Example: Simulate a button click
+    });
+    // Check if the "Save" and "Cancel" buttons are visible in the Actions column
+    console.log("test")
+    let saveButton = await screen.findByText("Save");
+    let cancelButton = await screen.findByText("Cancel");
+    expect(saveButton).toBeVisible();
+    expect(cancelButton).toBeVisible();
+    await act(async () => fireEvent.click(saveButton));
+    saveButton = await screen.findByText("Save");
+    cancelButton = await screen.findByText("Cancel");
+    await waitFor(() => {
 
-  //   });
-  //   await act(async () => {
-  //     const id1 = await waitFor(async () =>
-  //       screen.getByText("1")
-  //     );
-  //     userEvent.click(id1);
-  //   })
-  //   await waitFor(() => {
-  //     expect(screen.getByText("Manage mandates for testfirstname testlastname")).toBeVisible()
-  //   })
+      expect(screen.getByText("First name is required")).toBeVisible()
+      expect(screen.getByText("Last name is required")).toBeVisible()
+      expect(screen.getByText("Email is required")).toBeVisible()
+      expect(screen.getByText("Must be valid email")).toBeVisible()
+      expect(screen.getByText("Email must belong to the '@arcadis.com' domain")).toBeVisible()
+      expect(screen.queryByText("Department Id is empty, contact app administrator")).not.toBeInTheDocument()
+
+    })
+    await act(async () => {
+      fireEvent.click(cancelButton);
+    });
+    expect(createUser).not.toBeCalled();
+    expect(saveButton).not.toBeVisible();
+    expect(cancelButton).not.toBeVisible();
+  });
+  it("Should open a dialog when clicking on the Id where mandates can be assigned", async () => {
+    await act(async () => {
+      router.navigate({ to: "/keyuser/users" });
+    });
+    await act(async () => {
+      vi.mocked(useContext).mockReturnValue({
+        account: { FirstName: "test", Department: { DepartmentCode: 1 } },
+      });
+      render(<RouterProvider router={router} />);
+      (getMandates as ReturnType<typeof vi.fn>).mockResolvedValue([
+        {
+          Id: 1,
+          MandateName: "testmandate1",
+          Description: "testdescription1",
+          DepartmentId: 1
+        },
+        {
+          Id: 2,
+          MandateName: "testmandate2",
+          Description: "testdescription2",
+          DepartmentId: 1
+        },
+      ]);
+      const mandates = await getMandates();
+      (getUsers as ReturnType<typeof vi.fn>).mockResolvedValue([
+        {
+          Id: 1,
+          FirstName: "testfirstname",
+          LastName: "testlastname",
+          Email: "testemail",
+          Department: { DepartmentCode: 1 },
+
+          KeyUser: false,
+          Mandates: []
+        },
+        {
+          Id: 2,
+          FirstName: "testfirstname2",
+          LastName: "testlastname2",
+          Email: "testemail2",
+          Department: { DepartmentCode: 1 },
+
+          KeyUser: true,
+          Mandates: mandates
+        },
+      ]);
 
 
-  // })
-  // it("Should assign a mandate to a user", async () => {
-  //   await act(async () => {
-  //     router.navigate({ to: "/keyuser/users" });
-  //   });
-  //   await act(async () => {
-  //     vi.mocked(useContext).mockReturnValue({
-  //       account: { FirstName: "test", DepartmentId: 1 },
-  //     });
-  //     render(<RouterProvider router={router} />);
+    });
+    await act(async () => {
+      const id1 = await waitFor(async () =>
+        screen.getByText("1")
+      );
+      userEvent.click(id1);
+    })
+    await waitFor(() => {
+      expect(screen.getByText("Manage mandates for testfirstname testlastname")).toBeVisible()
+    })
 
-  //     (getUsers as ReturnType<typeof vi.fn>).mockResolvedValue([
-  //       {
-  //         Id: 1,
-  //         FirstName: "testfirstname",
-  //         LastName: "testlastname",
-  //         Email: "testemail",
-  //         DepartmentId: "testdepartmentid",
-  //         KeyUser: false,
-  //         Mandates: []
-  //       },
-  //       {
-  //         Id: 2,
-  //         FirstName: "testfirstname2",
-  //         LastName: "testlastname2",
-  //         Email: "testemail2",
-  //         DepartmentId: "testdepartmentid2",
-  //         KeyUser: true,
-  //         Mandates: []
-  //       },
-  //     ]);
-  //   });
-  //   await act(async () => {
-  //     const id1 = await waitFor(async () =>
-  //       screen.getByText("1")
-  //     );
-  //     userEvent.click(id1);
-  //   })
-  //   await waitFor(() => {
-  //     expect(screen.getByText("Manage mandates for testfirstname testlastname")).toBeVisible()
-  //   })
 
-  //   let multiselects = await waitFor(async () =>
-  //     screen.getAllByRole("combobox")
-  //   );
-  //   await act(async () => {
-  //     userEvent.click(multiselects[0]);
-  //   });
-
-  //   await act(async () => {
-  //     fireEvent.keyDown(multiselects[0], { key: 'ArrowDown' });
-
-  //   });
-  //   await act(async () => {
-  //     fireEvent.click(screen.getByText('testmandate1'));
-
-  //   });
-
-  //   expect(vi.mocked(assignMandate)).toBeCalled();
-
-  // });
-  it("Should be true", async () => {
-    expect(true).toBe(true);
   })
+  it("Should assign a mandate to a user", async () => {
+    await act(async () => {
+      router.navigate({ to: "/keyuser/users" });
+    });
+    await act(async () => {
+      vi.mocked(useContext).mockReturnValue({
+        account: { FirstName: "test", Department: { DepartmentCode: 1 } },
+      });
+      render(<RouterProvider router={router} />);
+
+      (getUsers as ReturnType<typeof vi.fn>).mockResolvedValue([
+        {
+          Id: 1,
+          FirstName: "testfirstname",
+          LastName: "testlastname",
+          Email: "testemail",
+          Department: { DepartmentCode: 1 },
+          KeyUser: false,
+          Mandates: []
+        },
+        {
+          Id: 2,
+          FirstName: "testfirstname2",
+          LastName: "testlastname2",
+          Email: "testemail2",
+          Department: { DepartmentCode: 1 },
+
+          KeyUser: true,
+          Mandates: []
+        },
+      ]);
+    });
+    await act(async () => {
+      const id1 = await waitFor(async () =>
+        screen.getByText("1")
+      );
+      userEvent.click(id1);
+    })
+    await waitFor(() => {
+      expect(screen.getByText("Manage mandates for testfirstname testlastname")).toBeVisible()
+    })
+
+    let multiselects = await waitFor(async () =>
+      screen.getAllByRole("combobox")
+    );
+    await act(async () => {
+      userEvent.click(multiselects[0]);
+    });
+
+    await act(async () => {
+      fireEvent.keyDown(multiselects[0], { key: 'ArrowDown' });
+
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText('testmandate1'));
+
+    });
+
+    expect(vi.mocked(assignMandate)).toBeCalled();
+
+  });
+
 });

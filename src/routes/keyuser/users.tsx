@@ -49,7 +49,7 @@ function RouteComponent() {
     }
     );
   };
-  console.log(account)
+
   const handleAddRow = () => {
     setIsAdding(true);
     setUsers((prevUsers) => [
@@ -60,6 +60,7 @@ function RouteComponent() {
         LastName: "",
         Email: "",
         Department: account.Department,
+        DepartmentId: account.DepartmentId!,
         KeyUser: false,
         Mandates: [],
         Administrator: false,
@@ -116,6 +117,7 @@ function RouteComponent() {
         error.response = { data: usererrors };
         throw error;
       }
+      console.log("sanitizedUser", sanitizedUser)
       const addedUser = await createUser(sanitizedUser);
       if (newUser.Mandates.length > 0) {
 
@@ -123,7 +125,7 @@ function RouteComponent() {
       }
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.Id === newUser.Id ? { ...addedUser, isNew: false, Mandates: newUser.Mandates } : user
+          user.Id === newUser.Id ? { ...addedUser, isNew: false, Mandates: newUser.Mandates, Department: account.Department } : user
         )
       );
       setIsAdding(false);

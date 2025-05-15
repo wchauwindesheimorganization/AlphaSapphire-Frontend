@@ -39,7 +39,7 @@ export const adminusercolumns = ({
                         type="text"
                         value={getValue()}
                         onBlur={(value) => {
-                            console.log(user)
+
                             if (user.isNew) {
                                 updateUserState(user.Id, { FirstName: String(value) });
                                 return;
@@ -113,7 +113,7 @@ export const adminusercolumns = ({
                         type="checkbox"
                         checked={user.KeyUser}
                         onChange={(value) => {
-                            console.log(value)
+
                             if (user.isNew) {
                                 updateUserState(user.Id, { KeyUser: Boolean(value) });
                                 return;
@@ -136,7 +136,7 @@ export const adminusercolumns = ({
                         <div className="flex gap-2">
                             <button
                                 onClick={() => {
-                                    console.log(user)
+
                                     handleSaveNewUser(user);
                                 }}
                                 className="bg-green-500 text-white px-2 py-1 rounded"

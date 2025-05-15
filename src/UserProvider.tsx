@@ -3,7 +3,7 @@ import { useState, useEffect, act } from "react";
 import React from "react";
 import { getActiveUser } from "./api/userApi";
 import { useMsal } from "@azure/msal-react";
-import { User } from "./models/User";
+import { User } from "./models/entities/User";
 export default function Provider({ children }: { children: React.ReactNode }) {
   const msalInstance = useMsal();
   const activeAccount = msalInstance.instance.getActiveAccount();
