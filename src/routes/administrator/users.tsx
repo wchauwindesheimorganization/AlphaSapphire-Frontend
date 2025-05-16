@@ -7,6 +7,7 @@ import { useState, useEffect, useContext, useMemo } from "react";
 import { UserContext } from "@/UserContext";
 import { getMandates } from "@/api/mandateApi";
 import { Mandate } from "@/models/entities/Mandate";
+import { Department } from "@/models/entities/Department";
 import { getDepartments } from "@/api/departmentApi";
 export const Route = createFileRoute('/administrator/users')({
   component: RouteComponent,
@@ -17,7 +18,7 @@ function RouteComponent() {
   type EditableUser = User & { isNew?: boolean };
   const userContext = useContext(UserContext);
   const account = userContext.account!;
-  const [departments, setDepartments] = useState<{ Id: number, DepartmentCode: number }[]>([]);
+  const [departments, setDepartments] = useState<Department[]>([]);
   const [mandates, setMandates] = useState<Mandate[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [isAdding, setIsAdding] = useState(false);

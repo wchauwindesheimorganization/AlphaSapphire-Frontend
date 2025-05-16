@@ -19,6 +19,7 @@ import { Route as ProjectsProjectidImport } from './routes/projects/$projectid_'
 import { Route as KeyuserUsersImport } from './routes/keyuser/users'
 import { Route as KeyuserMandatesImport } from './routes/keyuser/mandates'
 import { Route as AdministratorUsersImport } from './routes/administrator/users'
+import { Route as AdministratorDepartmentsImport } from './routes/administrator/departments'
 import { Route as ProjectsProjectidSubprojectsSubprojectidImport } from './routes/projects/$projectid/subprojects/$subprojectid'
 
 // Create/Update Routes
@@ -71,6 +72,12 @@ const AdministratorUsersRoute = AdministratorUsersImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AdministratorDepartmentsRoute = AdministratorDepartmentsImport.update({
+  id: '/administrator/departments',
+  path: '/administrator/departments',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const ProjectsProjectidSubprojectsSubprojectidRoute =
   ProjectsProjectidSubprojectsSubprojectidImport.update({
     id: '/projects/$projectid/subprojects/$subprojectid',
@@ -101,6 +108,13 @@ declare module '@tanstack/react-router' {
       path: '/test'
       fullPath: '/test'
       preLoaderRoute: typeof TestImport
+      parentRoute: typeof rootRoute
+    }
+    '/administrator/departments': {
+      id: '/administrator/departments'
+      path: '/administrator/departments'
+      fullPath: '/administrator/departments'
+      preLoaderRoute: typeof AdministratorDepartmentsImport
       parentRoute: typeof rootRoute
     }
     '/administrator/users': {
@@ -154,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/test': typeof TestRoute
+  '/administrator/departments': typeof AdministratorDepartmentsRoute
   '/administrator/users': typeof AdministratorUsersRoute
   '/keyuser/mandates': typeof KeyuserMandatesRoute
   '/keyuser/users': typeof KeyuserUsersRoute
@@ -166,6 +181,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/test': typeof TestRoute
+  '/administrator/departments': typeof AdministratorDepartmentsRoute
   '/administrator/users': typeof AdministratorUsersRoute
   '/keyuser/mandates': typeof KeyuserMandatesRoute
   '/keyuser/users': typeof KeyuserUsersRoute
@@ -179,6 +195,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/test': typeof TestRoute
+  '/administrator/departments': typeof AdministratorDepartmentsRoute
   '/administrator/users': typeof AdministratorUsersRoute
   '/keyuser/mandates': typeof KeyuserMandatesRoute
   '/keyuser/users': typeof KeyuserUsersRoute
@@ -193,6 +210,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/test'
+    | '/administrator/departments'
     | '/administrator/users'
     | '/keyuser/mandates'
     | '/keyuser/users'
@@ -204,6 +222,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/test'
+    | '/administrator/departments'
     | '/administrator/users'
     | '/keyuser/mandates'
     | '/keyuser/users'
@@ -215,6 +234,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/test'
+    | '/administrator/departments'
     | '/administrator/users'
     | '/keyuser/mandates'
     | '/keyuser/users'
@@ -228,6 +248,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   TestRoute: typeof TestRoute
+  AdministratorDepartmentsRoute: typeof AdministratorDepartmentsRoute
   AdministratorUsersRoute: typeof AdministratorUsersRoute
   KeyuserMandatesRoute: typeof KeyuserMandatesRoute
   KeyuserUsersRoute: typeof KeyuserUsersRoute
@@ -240,6 +261,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   TestRoute: TestRoute,
+  AdministratorDepartmentsRoute: AdministratorDepartmentsRoute,
   AdministratorUsersRoute: AdministratorUsersRoute,
   KeyuserMandatesRoute: KeyuserMandatesRoute,
   KeyuserUsersRoute: KeyuserUsersRoute,
@@ -262,6 +284,7 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/test",
+        "/administrator/departments",
         "/administrator/users",
         "/keyuser/mandates",
         "/keyuser/users",
@@ -278,6 +301,9 @@ export const routeTree = rootRoute
     },
     "/test": {
       "filePath": "test.tsx"
+    },
+    "/administrator/departments": {
+      "filePath": "administrator/departments.tsx"
     },
     "/administrator/users": {
       "filePath": "administrator/users.tsx"
