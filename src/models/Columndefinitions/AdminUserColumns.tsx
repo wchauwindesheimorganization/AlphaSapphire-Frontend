@@ -3,7 +3,7 @@ import { User } from "@/models/entities/User";
 import { Mandate } from "@/models/entities/Mandate";
 import DepartmentSelect from "@/components/DepartmentSelect";
 import { Department } from "@/models/entities/Department";
-import { CellContext, ColumnDef, Row } from "@tanstack/react-table";
+import { Row } from "@tanstack/react-table";
 export const adminusercolumns = ({
     updateUserState,
     handleSaveNewUser,
@@ -25,7 +25,7 @@ export const adminusercolumns = ({
             cell: ({ row }: { row: Row<User & { isNew: boolean }> }) => {
 
                 const user = row.original;
-                return <span>{user!.Id}</span>
+                return <span>{user.Id}</span>
             },
         },
         {

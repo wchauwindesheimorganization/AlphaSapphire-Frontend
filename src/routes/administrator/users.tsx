@@ -35,7 +35,7 @@ function RouteComponent() {
 
   }, []);
   const validEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z]+(?:\.[a-zA-Z]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/gm;
     return emailRegex.test(email)
   }
   const arcadisEmail = (email: string) => {

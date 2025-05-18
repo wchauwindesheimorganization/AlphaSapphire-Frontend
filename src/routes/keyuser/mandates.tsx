@@ -82,7 +82,7 @@ function RouteComponent() {
         throw error;
       }
       const addedMandate = await createMandate(sanitizedMandate);
-      console.log(addedMandate)
+
       setMandates((prevMandates) =>
         prevMandates.map((mandate) =>
           mandate.Id === newMandate.Id
