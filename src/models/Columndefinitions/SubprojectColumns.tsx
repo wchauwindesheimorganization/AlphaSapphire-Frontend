@@ -8,6 +8,7 @@ export const SubprojectColumns = (): ColumnDef<Subproject>[] => [
         accessorKey: "Id",
         header: "ID",
         cell: ({ row }: { row: Row<Subproject> }) => {
+
             const subproject = row.original;
             return <span>{subproject.Id}</span>;
         },

@@ -5,12 +5,16 @@ export const ProjectColumns = (): ColumnDef<Project>[] => [
     {
         accessorKey: "Id",
         header: "ID",
-        cell: ({ getValue }: { getValue: () => unknown }) => <span>{String(getValue())}</span>,
+        cell: ({ getValue }: { getValue: () => unknown }) => {
+
+            return <span>{String(getValue())}</span>
+        },
     },
     {
         accessorKey: "ProjectName",
         header: "Project",
         cell: ({ row }: { row: Row<Project> }) => {
+            console.log(row)
             return <AccordionProjects project={row.original} />
         },
     }

@@ -7,6 +7,7 @@ import {
 import { useNavigate } from "@tanstack/react-router"
 import { Project } from "@/models/entities/Project"
 export default function AccordionProjects({ project }: { project: Project }) {
+
     const navigate = useNavigate()
     return (
         <Accordion type="single" collapsible className="w-full">

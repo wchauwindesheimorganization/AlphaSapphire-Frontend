@@ -18,6 +18,6 @@ function RouteComponent() {
     })
   }, [])
   return <div>
-    {project && <DataTable columns={SubprojectColumns()} data={project?.Subprojects}></DataTable>}
+    {project?.Subprojects && <DataTable columns={SubprojectColumns()} data={project?.Subprojects}></DataTable>}
   </div>
 }
