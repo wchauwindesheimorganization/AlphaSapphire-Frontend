@@ -1,9 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, it, vi } from "vitest";
 
 import {
     render,
-    screen,
-    fireEvent,
+
     waitFor,
     act,
 } from "@testing-library/react";
@@ -86,7 +85,7 @@ vi.mock("@azure/msal-browser", () => {
     };
 });
 vi.mock("@/api/projectApi", () => ({
-    getProjects: vi.fn(() => Promise.resolve([
+    getProject: vi.fn(() => Promise.resolve([
         {
             Id: 1,
             ProjectName: "Alpha Sapphire",
@@ -156,7 +155,8 @@ describe("Departments Route", () => {
     });
     it("Shows the subproject details", async () => {
         router.navigate({
-            to: "/projects",
+            to: "/projects/$projectid",
+            params: { projectid: "1" }
         });
         await act(async () => {
             render(
