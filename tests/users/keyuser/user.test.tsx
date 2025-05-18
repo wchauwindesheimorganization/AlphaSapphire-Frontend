@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 
 import {
@@ -10,7 +10,6 @@ import {
 } from "@testing-library/react";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "@/routeTree.gen";
-import { Mandate } from "@/models/entities/Mandate";
 import { getUsers, createUser, getActiveUser, assignMandate } from "@/api/userApi";
 import { getMandates } from "@/api/mandateApi";
 import "@testing-library/jest-dom";

@@ -82,7 +82,7 @@ export const usercolumns = ({
                 return (
                     <EditableCell
                         type="text"
-                        value={getValue() as string}
+                        value={getValue()}
                         onBlur={(value) => {
                             if (user.isNew) {
                                 updateUserState(user.Id, { Email: String(value) });
