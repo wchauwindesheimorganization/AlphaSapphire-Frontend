@@ -3,7 +3,7 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  useReactTable, Row
+  useReactTable
 } from "@tanstack/react-table";
 
 import {

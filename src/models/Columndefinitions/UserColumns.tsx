@@ -32,14 +32,14 @@ export const usercolumns = ({
             accessorKey: "FirstName",
             header: "First Name",
 
-            cell: ({ row, getValue }: { row: Row<User & { isNew: boolean }>, getValue: () => {} }) => {
+            cell: ({ row, getValue }: { row: Row<User & { isNew: boolean }>, getValue: () => string }) => {
                 const user = row.original;
 
                 return (
                     <EditableCell
 
                         type="text"
-                        value={getValue() as string}
+                        value={getValue()}
                         onBlur={(value) => {
                             if (user.isNew) {
                                 updateUserState(user.Id, { FirstName: String(value) });
@@ -61,7 +61,7 @@ export const usercolumns = ({
                 return (
                     <EditableCell
                         type="text"
-                        value={getValue() as string}
+                        value={getValue()}
                         onBlur={(value) => {
                             if (user.isNew) {
                                 updateUserState(user.Id, { LastName: String(value) });

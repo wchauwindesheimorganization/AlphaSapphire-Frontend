@@ -1,8 +1,6 @@
 import { Department } from "@/models/entities/Department";
 import { Row } from "@tanstack/react-table";
 import { EditableCell } from "@/components/ui/EditableCell";
-import { ColumnDef } from "@tanstack/react-table";
-
 export const AdminDepartmentColumns = ({
     handleSaveNewDepartment,
     handlePatchDepartment,

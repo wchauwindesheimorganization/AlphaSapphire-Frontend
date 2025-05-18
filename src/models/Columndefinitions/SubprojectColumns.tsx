@@ -15,8 +15,7 @@ export const SubprojectColumns = (): ColumnDef<Subproject>[] => [
     {
         accessorKey: "SubprojectName",
         header: "Name",
-        cell: ({ row, getValue }: { row: Row<Subproject>; getValue: () => unknown }) => {
-            const subproject = row.original;
+        cell: ({ getValue }: { row: Row<Subproject>; getValue: () => unknown }) => {
             return (
                 <span
                 >
