@@ -135,12 +135,11 @@ function RouteComponent() {
             )}
             data={mandates}
           />
-          {errors &&
-            errors.map(({ errormessage, id }) => (
-              <p key={id} style={{ color: "red " }}>
-                {errormessage}
-              </p>
-            ))}
+          {errors?.map(({ errormessage, id }) => (
+            <p key={id} style={{ color: "red " }}>
+              {errormessage}
+            </p>
+          ))}
         </>
       )}
     </>

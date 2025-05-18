@@ -39,15 +39,25 @@ function RouteComponent() {
 
     return email.split("@")[1] == "arcadis.com"
   }
+  // Helper function to sort mandates by MandateName
+  const sortMandatesByName = (mandates: Mandate[]) => {
+    return mandates.slice().sort((a, b) => a.MandateName.localeCompare(b.MandateName));
+  };
+
   const updateUserState = (id: number, updatedFields: Partial<User>) => {
     setUsers((prevUsers) => {
       const newusers = prevUsers.map((user) => {
-        return user.Id === id ? { ...user, ...updatedFields } : user
-      })
-      newusers.map((user) => { user.Mandates.sort((a, b) => a.MandateName.localeCompare(b.MandateName)) })
+        if (user.Id === id) {
+          const updatedUser = { ...user, ...updatedFields };
+          return {
+            ...updatedUser,
+            Mandates: sortMandatesByName(updatedUser.Mandates),
+          };
+        }
+        return user;
+      });
       return newusers;
-    }
-    );
+    });
   };
 
   const handleAddRow = () => {
@@ -93,25 +103,24 @@ function RouteComponent() {
   const handleSaveNewUser = async (newUser: EditableUser) => {
     try {
       const { isNew, ...sanitizedUser } = newUser;
-      const usererrors = [];
-      if (sanitizedUser.FirstName === '') {
-        usererrors.push("First name is required");
-      }
-      if (sanitizedUser.LastName === '') {
-        usererrors.push("Last name is required");
-      }
-      if (sanitizedUser.Email === '') {
-        usererrors.push("Email is required");
-      }
-      if (!sanitizedUser.Department) {
-        usererrors.push("Department Id is empty, contact app administrator");
-      }
-      if (!validEmail(sanitizedUser.Email)) {
-        usererrors.push("Must be valid email");
-      }
-      if (!arcadisEmail(sanitizedUser.Email)) {
-        usererrors.push("Email must belong to the '@arcadis.com' domain");
-      }
+      const validationRules = [
+        { field: "FirstName", message: "First name is required" },
+        { field: "LastName", message: "Last name is required" },
+        { field: "Email", message: "Email is required" },
+        { field: "Department", message: "Department Id is empty, contact app administrator", check: (value) => !!value },
+        { field: "Email", message: "Must be valid email", check: validEmail },
+        { field: "Email", message: "Email must belong to the '@arcadis.com' domain", check: arcadisEmail }
+      ];
+
+      const usererrors: string[] = [];
+
+      validationRules.forEach(({ field, message, check }) => {
+        const value = sanitizedUser[field as keyof typeof sanitizedUser];
+        if (!value || (check && !check(String(value)))) {
+          usererrors.push(message);
+        }
+      });
+
       if (usererrors.length > 0) {
         const error = new Error("An error occurred!") as Error & { response?: { data: Array<string> } };
         error.response = { data: usererrors };
@@ -172,8 +181,8 @@ function RouteComponent() {
             data={memoizedData}
 
           />
-          {errors &&
-            errors.map(({ errormessage, id }) => (
+          {
+            errors?.map(({ errormessage, id }) => (
               <p key={id} style={{ color: "red " }}>
                 {errormessage}
               </p>
