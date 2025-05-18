@@ -11,7 +11,6 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as TestImport } from './routes/test'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as ProjectsIndexImport } from './routes/projects/index'
@@ -23,12 +22,6 @@ import { Route as AdministratorDepartmentsImport } from './routes/administrator/
 import { Route as ProjectsProjectidSubprojectsSubprojectidImport } from './routes/projects/$projectid/subprojects/$subprojectid'
 
 // Create/Update Routes
-
-const TestRoute = TestImport.update({
-  id: '/test',
-  path: '/test',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const AboutRoute = AboutImport.update({
   id: '/about',
@@ -103,13 +96,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
-    '/test': {
-      id: '/test'
-      path: '/test'
-      fullPath: '/test'
-      preLoaderRoute: typeof TestImport
-      parentRoute: typeof rootRoute
-    }
     '/administrator/departments': {
       id: '/administrator/departments'
       path: '/administrator/departments'
@@ -167,7 +153,6 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/test': typeof TestRoute
   '/administrator/departments': typeof AdministratorDepartmentsRoute
   '/administrator/users': typeof AdministratorUsersRoute
   '/keyuser/mandates': typeof KeyuserMandatesRoute
@@ -180,7 +165,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/test': typeof TestRoute
   '/administrator/departments': typeof AdministratorDepartmentsRoute
   '/administrator/users': typeof AdministratorUsersRoute
   '/keyuser/mandates': typeof KeyuserMandatesRoute
@@ -194,7 +178,6 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/test': typeof TestRoute
   '/administrator/departments': typeof AdministratorDepartmentsRoute
   '/administrator/users': typeof AdministratorUsersRoute
   '/keyuser/mandates': typeof KeyuserMandatesRoute
@@ -209,7 +192,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/test'
     | '/administrator/departments'
     | '/administrator/users'
     | '/keyuser/mandates'
@@ -221,7 +203,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/test'
     | '/administrator/departments'
     | '/administrator/users'
     | '/keyuser/mandates'
@@ -233,7 +214,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
-    | '/test'
     | '/administrator/departments'
     | '/administrator/users'
     | '/keyuser/mandates'
@@ -247,7 +227,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  TestRoute: typeof TestRoute
   AdministratorDepartmentsRoute: typeof AdministratorDepartmentsRoute
   AdministratorUsersRoute: typeof AdministratorUsersRoute
   KeyuserMandatesRoute: typeof KeyuserMandatesRoute
@@ -260,7 +239,6 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  TestRoute: TestRoute,
   AdministratorDepartmentsRoute: AdministratorDepartmentsRoute,
   AdministratorUsersRoute: AdministratorUsersRoute,
   KeyuserMandatesRoute: KeyuserMandatesRoute,
@@ -283,7 +261,6 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
-        "/test",
         "/administrator/departments",
         "/administrator/users",
         "/keyuser/mandates",
@@ -298,9 +275,6 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.tsx"
-    },
-    "/test": {
-      "filePath": "test.tsx"
     },
     "/administrator/departments": {
       "filePath": "administrator/departments.tsx"

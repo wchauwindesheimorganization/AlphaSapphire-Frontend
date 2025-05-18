@@ -42,15 +42,24 @@ function RouteComponent() {
 
     return email.split("@")[1] == "arcadis.com"
   }
+  const sortMandatesByName = (mandates: Mandate[]) => {
+    return mandates.slice().sort((a, b) => a.MandateName.localeCompare(b.MandateName));
+  };
+
   const updateUserState = (id: number, updatedFields: Partial<User>) => {
     setUsers((prevUsers) => {
       const newusers = prevUsers.map((user) => {
-        return user.Id === id ? { ...user, ...updatedFields } : user
-      })
-      newusers.map((user) => { user.Mandates.sort((a, b) => a.MandateName.localeCompare(b.MandateName)) })
+        if (user.Id === id) {
+          const updatedUser = { ...user, ...updatedFields };
+          return {
+            ...updatedUser,
+            Mandates: sortMandatesByName(updatedUser.Mandates),
+          };
+        }
+        return user;
+      });
       return newusers;
-    }
-    );
+    });
   };
   const handleAddRow = () => {
     setIsAdding(true);
@@ -175,8 +184,8 @@ function RouteComponent() {
             data={memoizedData}
 
           />
-          {errors &&
-            errors.map(({ errormessage, id }) => (
+          {
+            errors?.map(({ errormessage, id }) => (
               <p key={id} style={{ color: "red " }}>
                 {errormessage}
               </p>

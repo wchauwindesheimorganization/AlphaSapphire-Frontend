@@ -103,11 +103,17 @@ function RouteComponent() {
   const handleSaveNewUser = async (newUser: EditableUser) => {
     try {
       const { isNew, ...sanitizedUser } = newUser;
-      const validationRules = [
+      interface ValidationRule {
+        field: keyof EditableUser;
+        message: string;
+        check?: (value: string) => boolean;
+      }
+
+      const validationRules: ValidationRule[] = [
         { field: "FirstName", message: "First name is required" },
         { field: "LastName", message: "Last name is required" },
         { field: "Email", message: "Email is required" },
-        { field: "Department", message: "Department Id is empty, contact app administrator", check: (value) => !!value },
+        { field: "Department", message: "Department Id is empty, contact app administrator", check: (value: string) => !!value },
         { field: "Email", message: "Must be valid email", check: validEmail },
         { field: "Email", message: "Email must belong to the '@arcadis.com' domain", check: arcadisEmail }
       ];

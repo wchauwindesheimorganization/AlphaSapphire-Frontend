@@ -30,14 +30,17 @@ vi.mock("@/api/departmentApi", () => ({
         {
             Id: 1,
             DepartmentCode: "testdepartment1",
-            DepartmentName: "testdepartmentname1",
         },
         {
             Id: 2,
             DepartmentCode: "testdepartment2",
-            DepartmentName: "testdepartmentname2",
+
         },
     ])),
+    createDepartment: vi.fn(() => Promise.resolve({
+        Id: 3,
+        DepartmentCode: "testdepartment3",
+    })),
 }));
 vi.mock("@/api/mandateApi", () => ({
     getMandates: vi.fn(() => Promise.resolve([
@@ -103,15 +106,36 @@ describe("Departments Route", () => {
             defaultPreload: "intent",
         });
     });
-    it("renders the users page", async () => {
-
-        router.navigate({ to: "/administrator/departments" });
-        render(
-            <RouterProvider router={router} />
-        );
+    it("renders the departments page", async () => {
+        act(() => {
+            router.navigate({ to: "/administrator/departments" });
+            render(
+                <RouterProvider router={router} />
+            );
+        });
         await waitFor(() => {
             expect(screen.getByDisplayValue("testdepartment1")).toBeInTheDocument();
             expect(screen.getByDisplayValue("testdepartment2")).toBeInTheDocument();
         });
     });
+    it("adds a new department", async () => {
+        router.navigate({ to: "/administrator/departments" });
+        await act(async () => {
+            render(
+                <RouterProvider router={router} />
+            );
+        });
+        await act(async () => {
+            fireEvent.click(screen.getByText("Add Department"));
+
+        });
+        await act(async () => {
+            expect(screen.getByText("Save")).toBeInTheDocument();
+            expect(screen.getByText("Cancel")).toBeInTheDocument();
+            const input = screen.getAllByRole("textbox");
+            fireEvent.change(input[2], { target: { value: "testdepartment3" } });
+            fireEvent.click(screen.getByText("Save"));
+        });
+        expect(screen.getByDisplayValue("testdepartment3")).toBeInTheDocument();
+    })
 });
