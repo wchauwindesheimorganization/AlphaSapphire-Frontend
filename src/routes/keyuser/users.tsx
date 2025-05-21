@@ -11,6 +11,7 @@ import GenericErrorSetter from "@/utils/GenericErrorSetter";
 import GenericCancelAdd from "@/utils/GenericCancelAdd";
 import { Uservalidation } from "@/models/Validationrules/Uservalidation";
 import GenericAdd from "@/utils/GenericAdd";
+import { AlphabeticalMandateSort } from "@/utils/AlphabeticalMandateSort";
 export const Route = createFileRoute("/keyuser/users")({
   component: RouteComponent,
 });
@@ -35,19 +36,6 @@ function RouteComponent() {
 
   }, []);
 
-  const validEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email)
-  }
-  const arcadisEmail = (email: string) => {
-
-    return email.split("@")[1] == "arcadis.com"
-  }
-  // Helper function to sort mandates by MandateName
-  const sortMandatesByName = (mandates: Mandate[]) => {
-    return mandates.slice().sort((a, b) => a.MandateName.localeCompare(b.MandateName));
-  };
-
   const updateUserState = (id: number, updatedFields: Partial<User>) => {
     setUsers((prevUsers) => {
       const newusers = prevUsers.map((user) => {
@@ -55,7 +43,7 @@ function RouteComponent() {
           const updatedUser = { ...user, ...updatedFields };
           return {
             ...updatedUser,
-            Mandates: sortMandatesByName(updatedUser.Mandates),
+            Mandates: AlphabeticalMandateSort(updatedUser.Mandates),
           };
         }
         return user;
