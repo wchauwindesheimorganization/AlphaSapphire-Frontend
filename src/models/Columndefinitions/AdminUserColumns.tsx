@@ -13,9 +13,9 @@ export const adminusercolumns = ({
     departments }
     : {
         updateUserState: ((id: number, updatedFields: Partial<User & { isNew?: boolean }>) => void),
-        handleSaveNewUser: ((newUser: User & { isNew?: boolean }) => void),
+        handleSaveNewUser: ((newUser: User & { isNew?: boolean }) => Promise<void>),
         handleCancelNewUser: ((id: number) => void),
-        handlePatchUser: ((id: number, user: Partial<User & { isNew?: boolean }>) => void),
+        handlePatchUser: ((id: number, user: Partial<User & { isNew?: boolean }>) => Promise<void>),
         mandates: Mandate[],
         departments: Department[]
     }): any => [

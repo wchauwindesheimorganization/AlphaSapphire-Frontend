@@ -7,8 +7,8 @@ export const AdminDepartmentColumns = ({
     handleCancelNewDepartment,
     updateDepartmentState,
 }: {
-    handleSaveNewDepartment: (newDepartment: Department & { isNew?: boolean }) => void;
-    handlePatchDepartment: (id: number, updatedFields: Partial<Department>) => void;
+    handleSaveNewDepartment: (newDepartment: Department & { isNew?: boolean }) => Promise<void>;
+    handlePatchDepartment: (id: number, updatedFields: Partial<Department>) => Promise<void>;
     handleCancelNewDepartment: (id: number) => void;
     updateDepartmentState: (id: number, updatedFields: Partial<Department>) => void;
 }): any => [
