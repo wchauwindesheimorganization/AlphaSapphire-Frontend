@@ -3,7 +3,7 @@ import Multiselect from "./Multiselect";
 import { User } from "@/models/entities/User";
 import { Mandate } from "@/models/entities/Mandate";
 import { useState } from "react";
-export default function MandateDialog({ row, mandates, user, updateUserState, assignMandate, unassignMandate }: { row: any, mandates: Mandate[], user: User & { isNew?: boolean }, updateUserState: (id: number, updatedFields: Partial<any>) => void, assignMandate: (id: number, mandates: any[]) => Promise<any>, unassignMandate: (id: number, mandates: any[]) => Promise<any> }) {
+export default function MandateDialog({ row, mandates, user, updateUserState, assignMandate, unassignMandate }: Readonly<{ row: any, mandates: Mandate[], user: User & { isNew?: boolean }, updateUserState: (id: number, updatedFields: Partial<any>) => void, assignMandate: (id: number, mandates: any[]) => Promise<any>, unassignMandate: (id: number, mandates: any[]) => Promise<any> }>) {
     const [isOpen, setIsOpen] = useState(false);
 
     return (<Dialog open={isOpen} onOpenChange={setIsOpen}>

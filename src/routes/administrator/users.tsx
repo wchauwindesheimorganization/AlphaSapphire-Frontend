@@ -13,9 +13,7 @@ import GenericErrorSetter from "@/utils/GenericErrorSetter";
 import GenericCancelAdd from "@/utils/GenericCancelAdd";
 import { Uservalidation } from "@/models/Validationrules/Uservalidation";
 import GenericAdd from "@/utils/GenericAdd";
-import { AlphabeticalMandateSort } from "@/utils/AlphabeticalMandateSort";
 import GenericStateUpdater from "@/utils/GenericStateUpdater";
-AlphabeticalMandateSort
 export const Route = createFileRoute('/administrator/users')({
   component: RouteComponent,
 })

@@ -1,9 +1,8 @@
 import Select from 'react-select';
-import { useState } from "react";
 import { Department } from '@/models/entities/Department';
 import { User } from '@/models/entities/User';
 import { adminUpdateUser } from '@/api/userApi';
-export default function DepartmentSelect({ departments, user, updateUser }: { departments: Department[], user: User & { isNew?: boolean }, updateUser: (id: number, update: Partial<User>) => void }) {
+export default function DepartmentSelect({ departments, user, updateUser }: Readonly<{ departments: Department[], user: User & { isNew?: boolean }, updateUser: (id: number, update: Partial<User>) => void }>) {
 
 
 

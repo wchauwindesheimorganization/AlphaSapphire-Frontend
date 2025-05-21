@@ -1,10 +1,11 @@
 import { useState } from "react";
+type InputValue = string | number | readonly string[] | undefined;
 export const EditableCell: React.FC<{
-  value?: string | number | readonly string[] | boolean | undefined;
+  value?: string | number | readonly string[] | boolean;
   onChange?: (
     value?: string | number | readonly string[] | boolean | undefined
   ) => void; // Optional onChange
-  onBlur?: (value: string | number | readonly string[] | undefined) => void;
+  onBlur?: (value: InputValue) => void;
   type?: string;
   checked?: boolean;
 }> = ({ value: initialValue, onChange, onBlur, type, checked }) => {

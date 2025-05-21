@@ -30,11 +30,7 @@ function RouteComponent() {
     }, []);
 
     const updateDepartmentState = (id: number, updatedFields: Partial<Department>) => {
-        // setDepartments((prevDepartments) =>
-        //     prevDepartments.map((department) =>
-        //         department.Id === id ? { ...department, ...updatedFields } : department
-        //     )
-        // );
+
         GenericStateUpdater({ setState: setDepartments, id, updatedFields })
     };
 
@@ -72,7 +68,7 @@ function RouteComponent() {
 
     const handlePatchDepartment = async (id: number, updatedFields: Partial<Department>) => {
         try {
-            const updatedDepartment = await updateDepartment(id, updatedFields);
+            await updateDepartment(id, updatedFields);
             setDepartments((prevDepartments) =>
                 prevDepartments.map((department) =>
                     department.Id === id ? { ...department, ...updatedFields } : department
