@@ -9,6 +9,7 @@ import GenericErrorSetter from "@/utils/GenericErrorSetter";
 import GenericCancelAdd from "@/utils/GenericCancelAdd";
 import { MandateValidation } from "@/models/Validationrules/Mandatevalidation";
 import GenericAdd from "@/utils/GenericAdd";
+import GenericStateUpdater from "@/utils/GenericStateUpdater";
 export const Route = createFileRoute("/keyuser/mandates")({
   component: RouteComponent,
 });
@@ -29,11 +30,7 @@ function RouteComponent() {
   }, []);
 
   const updateMandateState = (id: number, updatedFields: Partial<Mandate>) => {
-    setMandates((prevMandates) =>
-      prevMandates.map((mandate) =>
-        mandate.Id === id ? { ...mandate, ...updatedFields } : mandate
-      )
-    );
+    GenericStateUpdater({ setState: setMandates, id, updatedFields })
   };
   const handleAddRow = () => {
     setIsAdding(true);

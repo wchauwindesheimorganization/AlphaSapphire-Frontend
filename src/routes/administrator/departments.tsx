@@ -7,6 +7,7 @@ import { AdminDepartmentColumns } from '@/models/Columndefinitions/AdminDepartme
 import GenericErrorSetter from '@/utils/GenericErrorSetter';
 import GenericCancelAdd from '@/utils/GenericCancelAdd';
 import GenericAdd from '@/utils/GenericAdd';
+import GenericStateUpdater from '@/utils/GenericStateUpdater';
 import { Departmentvalidation } from '@/models/Validationrules/Departmentvalidation';
 export const Route = createFileRoute('/administrator/departments')({
     component: RouteComponent,
@@ -29,11 +30,12 @@ function RouteComponent() {
     }, []);
 
     const updateDepartmentState = (id: number, updatedFields: Partial<Department>) => {
-        setDepartments((prevDepartments) =>
-            prevDepartments.map((department) =>
-                department.Id === id ? { ...department, ...updatedFields } : department
-            )
-        );
+        // setDepartments((prevDepartments) =>
+        //     prevDepartments.map((department) =>
+        //         department.Id === id ? { ...department, ...updatedFields } : department
+        //     )
+        // );
+        GenericStateUpdater({ setState: setDepartments, id, updatedFields })
     };
 
     const handleAddDepartment = () => {

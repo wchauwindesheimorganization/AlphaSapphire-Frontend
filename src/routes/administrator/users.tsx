@@ -14,6 +14,7 @@ import GenericCancelAdd from "@/utils/GenericCancelAdd";
 import { Uservalidation } from "@/models/Validationrules/Uservalidation";
 import GenericAdd from "@/utils/GenericAdd";
 import { AlphabeticalMandateSort } from "@/utils/AlphabeticalMandateSort";
+import GenericStateUpdater from "@/utils/GenericStateUpdater";
 AlphabeticalMandateSort
 export const Route = createFileRoute('/administrator/users')({
   component: RouteComponent,
@@ -42,20 +43,8 @@ function RouteComponent() {
   }, []);
 
   const updateUserState = (id: number, updatedFields: Partial<User>) => {
-    setUsers((prevUsers) => {
-      const newusers = prevUsers.map((user) => {
-        if (user.Id === id) {
-          const updatedUser = { ...user, ...updatedFields };
-          return {
-            ...updatedUser,
-            Mandates: AlphabeticalMandateSort(updatedUser.Mandates),
-          };
-        }
-        return user;
-      });
-      return newusers;
-    });
-  };
+    GenericStateUpdater({ setState: setUsers, id, updatedFields })
+  }
   const handleAddRow = () => {
     setIsAdding(true);
     setUsers((prevUsers) => [

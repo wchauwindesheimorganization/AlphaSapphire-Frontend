@@ -5,6 +5,7 @@ import { User } from "@/models/entities/User";
 import { Mandate } from "@/models/entities/Mandate";
 import MandateDialog from "@/components/MandateDialog";
 import { Department } from "@/models/entities/Department";
+
 export const usercolumns = ({
     updateUserState,
     handleSaveNewUser,
@@ -160,9 +161,10 @@ export const usercolumns = ({
         },
         {
             header: "Mandates",
-            cell: ({ row, getValue }: { row: Row<User & { isNew: boolean }>, getValue: () => string }) => {
+            cell: ({ row }: { row: Row<User & { isNew: boolean }>, getValue: () => string }) => {
                 const user = row.original;
-                return <span className="w-[12vw] block">{user && user.Mandates && user.Mandates.length > 0 && user.Mandates.map(e => e.MandateName).join(", ")}</span>
+
+                return <span className="w-[12vw] block">{user?.Mandates?.length > 0 && user.Mandates.map(e => e.MandateName).join(", ")}</span>
 
             }
         }
