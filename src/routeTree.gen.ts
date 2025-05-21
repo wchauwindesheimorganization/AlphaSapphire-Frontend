@@ -13,13 +13,10 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
-import { Route as ProjectsIndexImport } from './routes/projects/index'
-import { Route as ProjectsProjectidImport } from './routes/projects/$projectid_'
 import { Route as KeyuserUsersImport } from './routes/keyuser/users'
 import { Route as KeyuserMandatesImport } from './routes/keyuser/mandates'
 import { Route as AdministratorUsersImport } from './routes/administrator/users'
 import { Route as AdministratorDepartmentsImport } from './routes/administrator/departments'
-import { Route as ProjectsProjectidSubprojectsSubprojectidImport } from './routes/projects/$projectid/subprojects/$subprojectid'
 
 // Create/Update Routes
 
@@ -32,18 +29,6 @@ const AboutRoute = AboutImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ProjectsIndexRoute = ProjectsIndexImport.update({
-  id: '/projects/',
-  path: '/projects/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ProjectsProjectidRoute = ProjectsProjectidImport.update({
-  id: '/projects/$projectid_',
-  path: '/projects/$projectid',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -70,13 +55,6 @@ const AdministratorDepartmentsRoute = AdministratorDepartmentsImport.update({
   path: '/administrator/departments',
   getParentRoute: () => rootRoute,
 } as any)
-
-const ProjectsProjectidSubprojectsSubprojectidRoute =
-  ProjectsProjectidSubprojectsSubprojectidImport.update({
-    id: '/projects/$projectid/subprojects/$subprojectid',
-    path: '/projects/$projectid/subprojects/$subprojectid',
-    getParentRoute: () => rootRoute,
-  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -124,27 +102,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KeyuserUsersImport
       parentRoute: typeof rootRoute
     }
-    '/projects/$projectid_': {
-      id: '/projects/$projectid_'
-      path: '/projects/$projectid'
-      fullPath: '/projects/$projectid'
-      preLoaderRoute: typeof ProjectsProjectidImport
-      parentRoute: typeof rootRoute
-    }
-    '/projects/': {
-      id: '/projects/'
-      path: '/projects'
-      fullPath: '/projects'
-      preLoaderRoute: typeof ProjectsIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/projects/$projectid/subprojects/$subprojectid': {
-      id: '/projects/$projectid/subprojects/$subprojectid'
-      path: '/projects/$projectid/subprojects/$subprojectid'
-      fullPath: '/projects/$projectid/subprojects/$subprojectid'
-      preLoaderRoute: typeof ProjectsProjectidSubprojectsSubprojectidImport
-      parentRoute: typeof rootRoute
-    }
   }
 }
 
@@ -157,9 +114,6 @@ export interface FileRoutesByFullPath {
   '/administrator/users': typeof AdministratorUsersRoute
   '/keyuser/mandates': typeof KeyuserMandatesRoute
   '/keyuser/users': typeof KeyuserUsersRoute
-  '/projects/$projectid': typeof ProjectsProjectidRoute
-  '/projects': typeof ProjectsIndexRoute
-  '/projects/$projectid/subprojects/$subprojectid': typeof ProjectsProjectidSubprojectsSubprojectidRoute
 }
 
 export interface FileRoutesByTo {
@@ -169,9 +123,6 @@ export interface FileRoutesByTo {
   '/administrator/users': typeof AdministratorUsersRoute
   '/keyuser/mandates': typeof KeyuserMandatesRoute
   '/keyuser/users': typeof KeyuserUsersRoute
-  '/projects/$projectid': typeof ProjectsProjectidRoute
-  '/projects': typeof ProjectsIndexRoute
-  '/projects/$projectid/subprojects/$subprojectid': typeof ProjectsProjectidSubprojectsSubprojectidRoute
 }
 
 export interface FileRoutesById {
@@ -182,9 +133,6 @@ export interface FileRoutesById {
   '/administrator/users': typeof AdministratorUsersRoute
   '/keyuser/mandates': typeof KeyuserMandatesRoute
   '/keyuser/users': typeof KeyuserUsersRoute
-  '/projects/$projectid_': typeof ProjectsProjectidRoute
-  '/projects/': typeof ProjectsIndexRoute
-  '/projects/$projectid/subprojects/$subprojectid': typeof ProjectsProjectidSubprojectsSubprojectidRoute
 }
 
 export interface FileRouteTypes {
@@ -196,9 +144,6 @@ export interface FileRouteTypes {
     | '/administrator/users'
     | '/keyuser/mandates'
     | '/keyuser/users'
-    | '/projects/$projectid'
-    | '/projects'
-    | '/projects/$projectid/subprojects/$subprojectid'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -207,9 +152,6 @@ export interface FileRouteTypes {
     | '/administrator/users'
     | '/keyuser/mandates'
     | '/keyuser/users'
-    | '/projects/$projectid'
-    | '/projects'
-    | '/projects/$projectid/subprojects/$subprojectid'
   id:
     | '__root__'
     | '/'
@@ -218,9 +160,6 @@ export interface FileRouteTypes {
     | '/administrator/users'
     | '/keyuser/mandates'
     | '/keyuser/users'
-    | '/projects/$projectid_'
-    | '/projects/'
-    | '/projects/$projectid/subprojects/$subprojectid'
   fileRoutesById: FileRoutesById
 }
 
@@ -231,9 +170,6 @@ export interface RootRouteChildren {
   AdministratorUsersRoute: typeof AdministratorUsersRoute
   KeyuserMandatesRoute: typeof KeyuserMandatesRoute
   KeyuserUsersRoute: typeof KeyuserUsersRoute
-  ProjectsProjectidRoute: typeof ProjectsProjectidRoute
-  ProjectsIndexRoute: typeof ProjectsIndexRoute
-  ProjectsProjectidSubprojectsSubprojectidRoute: typeof ProjectsProjectidSubprojectsSubprojectidRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -243,10 +179,6 @@ const rootRouteChildren: RootRouteChildren = {
   AdministratorUsersRoute: AdministratorUsersRoute,
   KeyuserMandatesRoute: KeyuserMandatesRoute,
   KeyuserUsersRoute: KeyuserUsersRoute,
-  ProjectsProjectidRoute: ProjectsProjectidRoute,
-  ProjectsIndexRoute: ProjectsIndexRoute,
-  ProjectsProjectidSubprojectsSubprojectidRoute:
-    ProjectsProjectidSubprojectsSubprojectidRoute,
 }
 
 export const routeTree = rootRoute
@@ -264,10 +196,7 @@ export const routeTree = rootRoute
         "/administrator/departments",
         "/administrator/users",
         "/keyuser/mandates",
-        "/keyuser/users",
-        "/projects/$projectid_",
-        "/projects/",
-        "/projects/$projectid/subprojects/$subprojectid"
+        "/keyuser/users"
       ]
     },
     "/": {
@@ -287,15 +216,6 @@ export const routeTree = rootRoute
     },
     "/keyuser/users": {
       "filePath": "keyuser/users.tsx"
-    },
-    "/projects/$projectid_": {
-      "filePath": "projects/$projectid_.tsx"
-    },
-    "/projects/": {
-      "filePath": "projects/index.tsx"
-    },
-    "/projects/$projectid/subprojects/$subprojectid": {
-      "filePath": "projects/$projectid/subprojects/$subprojectid.tsx"
     }
   }
 }
