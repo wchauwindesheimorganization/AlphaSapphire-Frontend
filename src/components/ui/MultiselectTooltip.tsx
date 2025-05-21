@@ -2,7 +2,7 @@ import { Mandate } from "@/models/entities/Mandate"
 import { OptionProps } from "react-select"
 import { Tooltip as ReactTooltip } from "react-tooltip";
 
-export default function MultiselectTooltip({ data, innerProps, innerRef, isFocused }: OptionProps<Mandate>) {
+export default function MultiselectTooltip({ data, innerProps, innerRef, isFocused }: Readonly<OptionProps<Mandate>>) {
 
 
     return (
