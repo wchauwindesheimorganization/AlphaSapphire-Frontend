@@ -4,12 +4,17 @@ import { useEffect, useState } from 'react';
 import { getDepartments, createDepartment, updateDepartment } from '@/api/departmentApi';
 import { DataTable } from '@/components/Datatable';
 import { AdminDepartmentColumns } from '@/models/Columndefinitions/AdminDepartmentColumns';
-
+import GenericErrorSetter from '@/utils/GenericErrorSetter';
+import GenericCancelAdd from '@/utils/GenericCancelAdd';
+import GenericAdd from '@/utils/GenericAdd';
+import { Departmentvalidation } from '@/models/Validationrules/Departmentvalidation';
 export const Route = createFileRoute('/administrator/departments')({
     component: RouteComponent,
 });
 
 function RouteComponent() {
+    type EditableDepartment = Department & { isNew?: boolean };
+
     const [departments, setDepartments] = useState<Department[]>([]);
     const [isAdding, setIsAdding] = useState(false);
     const [errors, setErrors] = useState<
@@ -37,7 +42,6 @@ function RouteComponent() {
             ...prevDepartments,
             {
                 Id: 0,
-                DepartmentName: '',
                 Description: '',
                 DepartmentCode: '',
                 isNew: true, // Flag to indicate this is a new row
@@ -47,6 +51,9 @@ function RouteComponent() {
 
     const handleSaveNewDepartment = async (newDepartment: Department & { isNew?: boolean }) => {
         try {
+            const sanitizedDepartment: EditableDepartment = { ...newDepartment };
+            console.log(sanitizedDepartment, newDepartment)
+            GenericAdd(Departmentvalidation, sanitizedDepartment)
             const createdDepartment = await createDepartment(newDepartment);
             setDepartments((prevDepartments) =>
                 prevDepartments.map((department) =>
@@ -54,19 +61,10 @@ function RouteComponent() {
                 )
             );
             setIsAdding(false);
-        } catch (error) {
-            if (error instanceof Error && (error as any).response?.data) {
-                const errorsWithId = (error as any).response?.data.map(
-                    (errormessage: string, id: number) => ({
-                        id: id,
-                        errormessage,
-                    })
-                );
-                setErrors(errorsWithId);
-            } else {
-                console.error("Unexpected error:", error);
-                setErrors([{ errormessage: "An unexpected error occurred.", id: 1 }]);
-            }
+        }
+        catch (error) {
+
+            GenericErrorSetter({ error, setErrors })
         }
     };
 
@@ -79,26 +77,12 @@ function RouteComponent() {
                 )
             );
         } catch (error) {
-            if (error instanceof Error && (error as any).response?.data) {
-                const errorsWithId = (error as any).response?.data.map(
-                    (errormessage: string, id: number) => ({
-                        id: id,
-                        errormessage,
-                    })
-                );
-                setErrors(errorsWithId);
-            } else {
-                console.error("Unexpected error:", error);
-                setErrors([{ errormessage: "An unexpected error occurred.", id: 1 }]);
-            }
+            GenericErrorSetter({ error, setErrors })
         }
     };
 
     const handleCancelNewDepartment = (id: number) => {
-        setDepartments((prevDepartments) =>
-            prevDepartments.filter((department) => department.Id !== id)
-        );
-        setIsAdding(false);
+        GenericCancelAdd(id, setDepartments, setIsAdding)
     };
 
     return (
@@ -106,6 +90,7 @@ function RouteComponent() {
             <button
                 onClick={handleAddDepartment}
                 className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+                disabled={isAdding}
             >
                 Add Department
             </button>
@@ -118,8 +103,8 @@ function RouteComponent() {
                 })}
                 data={departments}
             />
-            {errors &&
-                errors.map(({ errormessage, id }) => (
+            {
+                errors?.map(({ errormessage, id }) => (
                     <p key={id} style={{ color: "red " }}>
                         {errormessage}
                     </p>

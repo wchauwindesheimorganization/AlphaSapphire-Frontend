@@ -1,9 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, it, vi } from "vitest";
 
 import {
     render,
-    screen,
-    fireEvent,
     waitFor,
     act,
 } from "@testing-library/react";

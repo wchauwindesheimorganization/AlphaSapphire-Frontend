@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
     render,
     screen,
@@ -9,14 +9,11 @@ import {
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { Mandate } from "@/models/entities/Mandate";
 import { routeTree } from "../../src/routeTree.gen";
-import { getUsers, createUser, getActiveUser, assignMandate, unassignMandate } from "@/api/userApi";
+import { createUser, getActiveUser } from "@/api/userApi";
 import { createMandate, getMandates } from "@/api/mandateApi";
 import "@testing-library/jest-dom";
 import {
-    createContext,
     useContext,
-    useEffect,
-    useState,
     ReactNode,
 } from "react";
 vi.mock("@/api/userApi", () => ({
@@ -156,7 +153,7 @@ describe("Mandate Route", () => {
         cancelButton = await screen.findByText("Cancel");
         await waitFor(() => {
 
-            expect(screen.getByText("Mandate name is required")).toBeVisible()
+            expect(screen.getByText("Mandate Name is required")).toBeVisible()
             expect(screen.queryByText("Department Id is empty, contact app administrator")).not.toBeInTheDocument()
 
         })

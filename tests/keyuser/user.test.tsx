@@ -84,6 +84,7 @@ describe("Users Route", () => {
     (getActiveUser as ReturnType<typeof vi.fn>).mockResolvedValue({
       account: {
         name: "testuser@example.com",
+        DepartmentId: 1
       },
     });
     router = createRouter({
@@ -134,7 +135,7 @@ describe("Users Route", () => {
     });
     await act(async () => {
       vi.mocked(useContext).mockReturnValue({
-        account: { FirstName: "test", Department: { DepartmentCode: 1 } },
+        account: { FirstName: "test", DepartmentId: 1, Department: { DepartmentCode: 1 } },
       });
       render(<RouterProvider router={router} />);
 
@@ -173,7 +174,7 @@ describe("Users Route", () => {
       fireEvent.click(addNewUserButton); // Example: Simulate a button click
     });
     // Check if the "Save" and "Cancel" buttons are visible in the Actions column
-    console.log("test")
+
     let saveButton = await screen.findByText("Save");
     let cancelButton = await screen.findByText("Cancel");
     expect(saveButton).toBeVisible();
@@ -265,7 +266,7 @@ describe("Users Route", () => {
     });
     await act(async () => {
       vi.mocked(useContext).mockReturnValue({
-        account: { FirstName: "test", Department: { DepartmentCode: 1 } },
+        account: { FirstName: "test", DepartmentId: 1, Department: { DepartmentCode: 1 } },
       });
       render(<RouterProvider router={router} />);
 

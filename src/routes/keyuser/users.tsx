@@ -7,6 +7,10 @@ import { useState, useEffect, useContext, useMemo } from "react";
 import { UserContext } from "@/UserContext";
 import { getMandates } from "@/api/mandateApi";
 import { Mandate } from "@/models/entities/Mandate";
+import GenericErrorSetter from "@/utils/GenericErrorSetter";
+import GenericCancelAdd from "@/utils/GenericCancelAdd";
+import { Uservalidation } from "@/models/Validationrules/Uservalidation";
+import GenericAdd from "@/utils/GenericAdd";
 export const Route = createFileRoute("/keyuser/users")({
   component: RouteComponent,
 });
@@ -85,54 +89,19 @@ function RouteComponent() {
       updateUserState(id, user);
     }
     catch (error) {
-
-      if (error instanceof Error && (error as any).response?.data) {
-        const errorsWithId = (error as any).response?.data.map(
-          (errormessage: string, id: number) => ({
-            id: id,
-            errormessage,
-          })
-        );
-        setErrors(errorsWithId);
-      } else {
-        console.error("Unexpected error:", error);
-        setErrors([{ errormessage: "An unexpected error occurred.", id: 1 }]);
-      }
+      GenericErrorSetter({ error, setErrors })
     }
   }
   const handleSaveNewUser = async (newUser: EditableUser) => {
     try {
-      const { isNew, ...sanitizedUser } = newUser;
+      const sanitizedUser: EditableUser = { ...newUser };
       interface ValidationRule {
         field: keyof EditableUser;
         message: string;
         check?: (value: string) => boolean;
       }
 
-      const validationRules: ValidationRule[] = [
-        { field: "FirstName", message: "First name is required" },
-        { field: "LastName", message: "Last name is required" },
-        { field: "Email", message: "Email is required" },
-        { field: "Department", message: "Department Id is empty, contact app administrator", check: (value: string) => !!value },
-        { field: "Email", message: "Must be valid email", check: validEmail },
-        { field: "Email", message: "Email must belong to the '@arcadis.com' domain", check: arcadisEmail }
-      ];
-
-      const usererrors: string[] = [];
-
-      validationRules.forEach(({ field, message, check }) => {
-        const value = sanitizedUser[field as keyof typeof sanitizedUser];
-        if (!value || (check && !check(String(value)))) {
-          usererrors.push(message);
-        }
-      });
-
-      if (usererrors.length > 0) {
-        const error = new Error("An error occurred!") as Error & { response?: { data: Array<string> } };
-        error.response = { data: usererrors };
-        throw error;
-      }
-      console.log("sanitizedUser", sanitizedUser)
+      GenericAdd(Uservalidation, sanitizedUser);
       const addedUser = await createUser(sanitizedUser);
       if (newUser.Mandates.length > 0) {
 
@@ -145,24 +114,13 @@ function RouteComponent() {
       );
       setIsAdding(false);
     } catch (error) {
-      if (error instanceof Error && (error as any).response?.data) {
-        const errorsWithId = (error as any).response?.data.map(
-          (errormessage: string, id: number) => ({
-            id: id,
-            errormessage,
-          })
-        );
-        setErrors(errorsWithId);
-      } else {
-        console.error("Unexpected error:", error);
-        setErrors([{ errormessage: "An unexpected error occurred.", id: 1 }]);
-      }
+      GenericErrorSetter({ error, setErrors })
     }
   };
 
   const handleCancelNewUser = (id: number) => {
-    setUsers((prevUsers) => prevUsers.filter((user) => user.Id !== id));
-    setIsAdding(false);
+    GenericCancelAdd(id, setUsers, setIsAdding);
+
   };
   const memoizedData = useMemo(() => users, [users]);
   const memoizedMandates = useMemo(() => mandates, [mandates]);

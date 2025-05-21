@@ -151,7 +151,7 @@ describe("Users Route", () => {
     });
     await act(async () => {
       vi.mocked(useContext).mockReturnValue({
-        account: { FirstName: "test", Department: { DepartmentCode: 1 } },
+        account: { FirstName: "test", DepartmentId: 1, Department: { DepartmentCode: 1 } },
       });
       render(<RouterProvider router={router} />);
 
@@ -199,7 +199,6 @@ describe("Users Route", () => {
     saveButton = await screen.findByText("Save");
     cancelButton = await screen.findByText("Cancel");
     await waitFor(() => {
-
       expect(screen.getByText("First name is required")).toBeVisible()
       expect(screen.getByText("Last name is required")).toBeVisible()
       expect(screen.getByText("Email is required")).toBeVisible()

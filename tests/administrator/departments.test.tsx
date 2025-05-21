@@ -133,9 +133,13 @@ describe("Departments Route", () => {
             expect(screen.getByText("Save")).toBeInTheDocument();
             expect(screen.getByText("Cancel")).toBeInTheDocument();
             const input = screen.getAllByRole("textbox");
+
             fireEvent.change(input[2], { target: { value: "testdepartment3" } });
+            fireEvent.blur(input[2])
             fireEvent.click(screen.getByText("Save"));
+
+            expect(screen.getByDisplayValue("testdepartment3")).toBeInTheDocument();
+
         });
-        expect(screen.getByDisplayValue("testdepartment3")).toBeInTheDocument();
     })
 });

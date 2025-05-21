@@ -5,6 +5,10 @@ import { UserContext } from "@/UserContext";
 import { mandatecolumns } from "@/models/Columndefinitions/MandateColumns";
 import { Mandate } from "@/models/entities/Mandate";
 import { createMandate, getMandates, updateMandate } from "@/api/mandateApi";
+import GenericErrorSetter from "@/utils/GenericErrorSetter";
+import GenericCancelAdd from "@/utils/GenericCancelAdd";
+import { MandateValidation } from "@/models/Validationrules/Mandatevalidation";
+import GenericAdd from "@/utils/GenericAdd";
 export const Route = createFileRoute("/keyuser/mandates")({
   component: RouteComponent,
 });
@@ -51,36 +55,15 @@ function RouteComponent() {
       updateMandateState(id, mandate);
     }
     catch (error) {
-
-      if (error instanceof Error && (error as any).response?.data) {
-        const errorsWithId = (error as any).response?.data.map(
-          (errormessage: string, id: number) => ({
-            id: id,
-            errormessage,
-          })
-        );
-        setErrors(errorsWithId);
-      } else {
-        console.error("Unexpected error:", error);
-        setErrors([{ errormessage: "An unexpected error occurred.", id: 1 }]);
-      }
+      GenericErrorSetter({ error, setErrors })
     }
   }
   const handleSaveNewMandate = async (newMandate: EditableMandate) => {
     try {
-      const { isNew, ...sanitizedMandate } = newMandate;
-      const mandateerrors = [];
-      if (sanitizedMandate.MandateName === '') {
-        mandateerrors.push("Mandate name is required");
-      }
-      if (sanitizedMandate.DepartmentId === null) {
-        mandateerrors.push("Department Id is empty, contact app administrator");
-      }
-      if (mandateerrors.length > 0) {
-        const error = new Error("An error occurred!") as Error & { response?: { data: Array<string> } };
-        error.response = { data: mandateerrors };
-        throw error;
-      }
+      const sanitizedMandate: EditableMandate = { ...newMandate };
+      GenericAdd(MandateValidation, sanitizedMandate)
+
+
       const addedMandate = await createMandate(sanitizedMandate);
 
       setMandates((prevMandates) =>
@@ -94,24 +77,12 @@ function RouteComponent() {
       );
       setIsAdding(false);
     } catch (error) {
-      if (error instanceof Error && (error as any).response?.data) {
-        const errorsWithId = (error as any).response?.data.map(
-          (errormessage: string, id: number) => ({
-            id: id,
-            errormessage,
-          })
-        );
-        setErrors(errorsWithId);
-      } else {
-        console.error("Unexpected error:", error);
-        setErrors([{ errormessage: "An unexpected error occurred.", id: 1 }]);
-      }
+      GenericErrorSetter({ error, setErrors })
     }
   };
 
   const handleCancelNewMandate = (id: number) => {
-    setMandates((prevMandates) => prevMandates.filter((mandate) => mandate.Id !== id));
-    setIsAdding(false);
+    GenericCancelAdd(id, setMandates, setIsAdding);
   };
   return (
     <>

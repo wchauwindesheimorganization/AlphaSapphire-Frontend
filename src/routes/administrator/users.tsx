@@ -9,6 +9,10 @@ import { getMandates } from "@/api/mandateApi";
 import { Mandate } from "@/models/entities/Mandate";
 import { Department } from "@/models/entities/Department";
 import { getDepartments } from "@/api/departmentApi";
+import GenericErrorSetter from "@/utils/GenericErrorSetter";
+import GenericCancelAdd from "@/utils/GenericCancelAdd";
+import { Uservalidation } from "@/models/Validationrules/Uservalidation";
+import GenericAdd from "@/utils/GenericAdd";
 export const Route = createFileRoute('/administrator/users')({
   component: RouteComponent,
 })
@@ -34,14 +38,8 @@ function RouteComponent() {
     });
 
   }, []);
-  const validEmail = (email: string) => {
-    const emailRegex = /^[a-zA-Z]+(?:\.[a-zA-Z]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/gm;
-    return emailRegex.test(email)
-  }
-  const arcadisEmail = (email: string) => {
 
-    return email.split("@")[1] == "arcadis.com"
-  }
+
   const sortMandatesByName = (mandates: Mandate[]) => {
     return mandates.slice().sort((a, b) => a.MandateName.localeCompare(b.MandateName));
   };
@@ -70,7 +68,7 @@ function RouteComponent() {
         FirstName: "",
         LastName: "",
         Email: "",
-        DepartmentId: account.DepartmentId,
+        DepartmentId: account.DepartmentId!,
         KeyUser: false,
         Mandates: [],
         Administrator: false,
@@ -87,47 +85,15 @@ function RouteComponent() {
     }
     catch (error) {
 
-      if (error instanceof Error && (error as any).response?.data) {
-        const errorsWithId = (error as any).response?.data.map(
-          (errormessage: string, id: number) => ({
-            id: id,
-            errormessage,
-          })
-        );
-        setErrors(errorsWithId);
-      } else {
-        console.error("Unexpected error:", error);
-        setErrors([{ errormessage: "An unexpected error occurred.", id: 1 }]);
-      }
+      GenericErrorSetter({ error, setErrors })
+
     }
   }
   const handleSaveNewUser = async (newUser: EditableUser) => {
     try {
-      const { isNew, ...sanitizedUser } = newUser;
-      const usererrors = [];
-      if (sanitizedUser.FirstName === '') {
-        usererrors.push("First name is required");
-      }
-      if (sanitizedUser.LastName === '') {
-        usererrors.push("Last name is required");
-      }
-      if (sanitizedUser.Email === '') {
-        usererrors.push("Email is required");
-      }
-      if (!sanitizedUser.DepartmentId) {
-        usererrors.push("Department is empty, contact app administrator");
-      }
-      if (!validEmail(sanitizedUser.Email)) {
-        usererrors.push("Must be valid email");
-      }
-      if (!arcadisEmail(sanitizedUser.Email)) {
-        usererrors.push("Email must belong to the '@arcadis.com' domain");
-      }
-      if (usererrors.length > 0) {
-        const error = new Error("An error occurred!") as Error & { response?: { data: Array<string> } };
-        error.response = { data: usererrors };
-        throw error;
-      }
+      const sanitizedUser: EditableUser = { ...newUser };
+      GenericAdd(Uservalidation, sanitizedUser)
+
       const addedUser = await adminCreateUser(sanitizedUser);
       if (newUser.Mandates.length > 0) {
 
@@ -140,24 +106,12 @@ function RouteComponent() {
       );
       setIsAdding(false);
     } catch (error) {
-      if (error instanceof Error && (error as any).response?.data) {
-        const errorsWithId = (error as any).response?.data.map(
-          (errormessage: string, id: number) => ({
-            id: id,
-            errormessage,
-          })
-        );
-        setErrors(errorsWithId);
-      } else {
-        console.error("Unexpected error:", error);
-        setErrors([{ errormessage: "An unexpected error occurred.", id: 1 }]);
-      }
+      GenericErrorSetter({ error, setErrors })
     }
   };
 
   const handleCancelNewUser = (id: number) => {
-    setUsers((prevUsers) => prevUsers.filter((user) => user.Id !== id));
-    setIsAdding(false);
+    GenericCancelAdd(id, setUsers, setIsAdding)
   };
 
   const memoizedData = useMemo(() => users, [users]);
@@ -195,4 +149,5 @@ function RouteComponent() {
     </>
   );
 }
+
 
