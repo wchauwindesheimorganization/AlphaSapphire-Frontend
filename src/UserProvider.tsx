@@ -1,10 +1,9 @@
 import { UserContext } from "./UserContext";
-import { useState, useEffect, act } from "react";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { getActiveUser } from "./api/userApi";
 import { useMsal } from "@azure/msal-react";
-import { User } from "./models/User";
-export default function Provider({ children }: { children: React.ReactNode }) {
+import { User } from "./models/entities/User";
+export default function Provider({ children }: { readonly children: React.ReactNode }) {
   const msalInstance = useMsal();
   const activeAccount = msalInstance.instance.getActiveAccount();
 
@@ -25,8 +24,10 @@ export default function Provider({ children }: { children: React.ReactNode }) {
 
     acquireUser();
   }, []);
+  const contextValue = React.useMemo(() => ({ account }), [account]);
+
   return (
-    <UserContext.Provider value={{ account }}>
+    <UserContext.Provider value={contextValue}>
       {account && children}
       <p>{error}</p>
     </UserContext.Provider>

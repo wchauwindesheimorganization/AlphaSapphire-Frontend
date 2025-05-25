@@ -24,15 +24,19 @@ declare module "@tanstack/react-router" {
     router: typeof router;
   }
 }
-
+const silentRequest = {
+  scopes: ["access_as_user"],
+  loginHint: "user@contoso.com"
+};
 msalInstance.initialize().then(() => {
   // Account selection logic is app dependent. Adjust as needed for different use cases.
   const accounts = msalInstance.getAllAccounts();
-  if (accounts.length == 1) {
+  if (accounts && accounts.length == 1) {
     msalInstance.setActiveAccount(accounts[0]);
   } else {
     msalInstance.loginPopup();
   }
+
 
   msalInstance.addEventCallback((event: EventMessage) => {
     if (event.eventType === EventType.LOGIN_SUCCESS && event.payload) {
@@ -43,7 +47,7 @@ msalInstance.initialize().then(() => {
     }
   });
   const rootElement = document.getElementById("app")!;
-  if (!rootElement.innerHTML) {
+  if (rootElement && !rootElement.innerHTML) {
     const root = ReactDOM.createRoot(rootElement);
     root.render(
       <MsalProvider instance={msalInstance}>

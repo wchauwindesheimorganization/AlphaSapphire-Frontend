@@ -1,10 +1,9 @@
 "use client";
-
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  useReactTable,
+  useReactTable
 } from "@tanstack/react-table";
 
 import {
@@ -18,17 +17,20 @@ import {
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
+  // columns: Row<TData|TValue>[];
+
   data: TData[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
+}: Readonly<DataTableProps<TData, TValue>>) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+
   });
 
   return (
@@ -43,9 +45,9 @@ export function DataTable<TData, TValue>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 );
               })}

@@ -11,17 +11,14 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as UsersImport } from './routes/users'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
+import { Route as KeyuserUsersImport } from './routes/keyuser/users'
+import { Route as KeyuserMandatesImport } from './routes/keyuser/mandates'
+import { Route as AdministratorUsersImport } from './routes/administrator/users'
+import { Route as AdministratorDepartmentsImport } from './routes/administrator/departments'
 
 // Create/Update Routes
-
-const UsersRoute = UsersImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const AboutRoute = AboutImport.update({
   id: '/about',
@@ -32,6 +29,30 @@ const AboutRoute = AboutImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const KeyuserUsersRoute = KeyuserUsersImport.update({
+  id: '/keyuser/users',
+  path: '/keyuser/users',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const KeyuserMandatesRoute = KeyuserMandatesImport.update({
+  id: '/keyuser/mandates',
+  path: '/keyuser/mandates',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdministratorUsersRoute = AdministratorUsersImport.update({
+  id: '/administrator/users',
+  path: '/administrator/users',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdministratorDepartmentsRoute = AdministratorDepartmentsImport.update({
+  id: '/administrator/departments',
+  path: '/administrator/departments',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -53,11 +74,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
-    '/users': {
-      id: '/users'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof UsersImport
+    '/administrator/departments': {
+      id: '/administrator/departments'
+      path: '/administrator/departments'
+      fullPath: '/administrator/departments'
+      preLoaderRoute: typeof AdministratorDepartmentsImport
+      parentRoute: typeof rootRoute
+    }
+    '/administrator/users': {
+      id: '/administrator/users'
+      path: '/administrator/users'
+      fullPath: '/administrator/users'
+      preLoaderRoute: typeof AdministratorUsersImport
+      parentRoute: typeof rootRoute
+    }
+    '/keyuser/mandates': {
+      id: '/keyuser/mandates'
+      path: '/keyuser/mandates'
+      fullPath: '/keyuser/mandates'
+      preLoaderRoute: typeof KeyuserMandatesImport
+      parentRoute: typeof rootRoute
+    }
+    '/keyuser/users': {
+      id: '/keyuser/users'
+      path: '/keyuser/users'
+      fullPath: '/keyuser/users'
+      preLoaderRoute: typeof KeyuserUsersImport
       parentRoute: typeof rootRoute
     }
   }
@@ -68,41 +110,75 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/users': typeof UsersRoute
+  '/administrator/departments': typeof AdministratorDepartmentsRoute
+  '/administrator/users': typeof AdministratorUsersRoute
+  '/keyuser/mandates': typeof KeyuserMandatesRoute
+  '/keyuser/users': typeof KeyuserUsersRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/users': typeof UsersRoute
+  '/administrator/departments': typeof AdministratorDepartmentsRoute
+  '/administrator/users': typeof AdministratorUsersRoute
+  '/keyuser/mandates': typeof KeyuserMandatesRoute
+  '/keyuser/users': typeof KeyuserUsersRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/users': typeof UsersRoute
+  '/administrator/departments': typeof AdministratorDepartmentsRoute
+  '/administrator/users': typeof AdministratorUsersRoute
+  '/keyuser/mandates': typeof KeyuserMandatesRoute
+  '/keyuser/users': typeof KeyuserUsersRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/users'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/administrator/departments'
+    | '/administrator/users'
+    | '/keyuser/mandates'
+    | '/keyuser/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/users'
-  id: '__root__' | '/' | '/about' | '/users'
+  to:
+    | '/'
+    | '/about'
+    | '/administrator/departments'
+    | '/administrator/users'
+    | '/keyuser/mandates'
+    | '/keyuser/users'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/administrator/departments'
+    | '/administrator/users'
+    | '/keyuser/mandates'
+    | '/keyuser/users'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  UsersRoute: typeof UsersRoute
+  AdministratorDepartmentsRoute: typeof AdministratorDepartmentsRoute
+  AdministratorUsersRoute: typeof AdministratorUsersRoute
+  KeyuserMandatesRoute: typeof KeyuserMandatesRoute
+  KeyuserUsersRoute: typeof KeyuserUsersRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  UsersRoute: UsersRoute,
+  AdministratorDepartmentsRoute: AdministratorDepartmentsRoute,
+  AdministratorUsersRoute: AdministratorUsersRoute,
+  KeyuserMandatesRoute: KeyuserMandatesRoute,
+  KeyuserUsersRoute: KeyuserUsersRoute,
 }
 
 export const routeTree = rootRoute
@@ -117,7 +193,10 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
-        "/users"
+        "/administrator/departments",
+        "/administrator/users",
+        "/keyuser/mandates",
+        "/keyuser/users"
       ]
     },
     "/": {
@@ -126,8 +205,17 @@ export const routeTree = rootRoute
     "/about": {
       "filePath": "about.tsx"
     },
-    "/users": {
-      "filePath": "users.tsx"
+    "/administrator/departments": {
+      "filePath": "administrator/departments.tsx"
+    },
+    "/administrator/users": {
+      "filePath": "administrator/users.tsx"
+    },
+    "/keyuser/mandates": {
+      "filePath": "keyuser/mandates.tsx"
+    },
+    "/keyuser/users": {
+      "filePath": "keyuser/users.tsx"
     }
   }
 }

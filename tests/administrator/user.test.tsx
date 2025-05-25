@@ -1,4 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
 import {
   render,
   screen,
@@ -6,26 +7,54 @@ import {
   waitFor,
   act,
 } from "@testing-library/react";
-import { Route as UsersRoute } from "../../src/routes/users";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
-import { UserContext } from "@/UserContext";
-import { routeTree } from "../../src/routeTree.gen";
-import Provider from "../../src/UserProvider";
-import { useMsal } from "@azure/msal-react";
-import { getUsers, createUser, getActiveUser } from "@/api/userApi";
+import { routeTree } from "@/routeTree.gen";
+import { getUsers, createUser, getActiveUser, adminGetUsers } from "@/api/userApi";
+import { getMandates } from "@/api/mandateApi";
+
 import "@testing-library/jest-dom";
-import { User } from "@/models/User";
+import { User } from "@/models/entities/User";
 import {
-  createContext,
   useContext,
-  useEffect,
-  useState,
   ReactNode,
 } from "react";
 vi.mock("@/api/userApi", () => ({
   getUsers: vi.fn(),
   createUser: vi.fn(),
   getActiveUser: vi.fn(),
+  assignMandate: vi.fn(() => Promise.resolve({})),
+  unassignMandate: vi.fn(),
+  adminGetUsers: vi.fn(),
+}));
+vi.mock("@/api/departmentApi", () => ({
+  getDepartments: vi.fn(() => Promise.resolve([
+    {
+      Id: 1,
+      DepartmentCode: "testdepartment1",
+      DepartmentName: "testdepartmentname1",
+    },
+    {
+      Id: 2,
+      DepartmentCode: "testdepartment2",
+      DepartmentName: "testdepartmentname2",
+    },
+  ])),
+}));
+vi.mock("@/api/mandateApi", () => ({
+  getMandates: vi.fn(() => Promise.resolve([
+    {
+      Id: 1,
+      MandateName: "testmandate1",
+      Description: "testdescription1",
+      DepartmentId: 1
+    },
+    {
+      Id: 2,
+      MandateName: "testmandate2",
+      Description: "testdescription2",
+      DepartmentId: 1
+    },
+  ])),
 }));
 vi.mock("react", async () => {
   const actual = await vi.importActual("react");
@@ -37,17 +66,24 @@ vi.mock("react", async () => {
     useContext: vi.fn(),
   };
 });
-vi.mock("@azure/msal-react", () => ({
-  useMsal: vi.fn(() => ({
-    instance: {
-      logout: vi.fn(),
-      getAllAccounts: vi.fn(() => [{ name: "Roks, Mart", DepartmentId: 1 }]),
-      getActiveAccount: vi.fn(() => {
-        return [{ name: "Roks, Mart", DepartmentId: 1 }];
-      }),
-    },
-  })),
-}));
+
+vi.mock("@azure/msal-browser", () => {
+  const mockLoginPopup = vi.fn(); // Mock loginPopup method
+  const mockAcquireTokenSilent = vi.fn(); // Mock acquireTokenSilent method
+  const mockGetAllAccounts = vi.fn(); // Mock getAllAccounts method
+  const mockGetActiveAccount = vi.fn();
+  return {
+    PublicClientApplication: vi.fn().mockImplementation(() => ({
+      initialize: vi.fn().mockResolvedValue(undefined), // Mock initialize
+      loginPopup: mockLoginPopup, // Attach mock loginPopup
+      addEventCallback: vi.fn(),
+      acquireTokenSilent: mockAcquireTokenSilent, // Attach mock acquireTokenSilent
+      getAllAccounts: mockGetAllAccounts, // Attach mock getAllAccounts
+      getActiveAccount: mockGetActiveAccount, // Mock getActiveAccount method
+    })),
+  };
+});
+
 describe("Users Route", () => {
   let router: ReturnType<typeof createRouter>;
   (useContext as ReturnType<typeof vi.fn>).mockResolvedValue({
@@ -56,6 +92,7 @@ describe("Users Route", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+
 
     (getActiveUser as ReturnType<typeof vi.fn>).mockResolvedValue({
       account: {
@@ -69,13 +106,16 @@ describe("Users Route", () => {
   });
 
   it("Show loaded users", async () => {
-    (getUsers as ReturnType<typeof vi.fn>).mockResolvedValue([
+
+    const mandates = await getMandates();
+    (adminGetUsers as ReturnType<typeof vi.fn>).mockResolvedValue([
       {
         Id: 1,
         FirstName: "testfirstname",
         LastName: "testlastname",
         Email: "testemail",
-        DepartmentId: "testdepartment1",
+        Department: { DepartmentCode: 2 },
+        Mandates: mandates,
         KeyUser: false,
       },
       {
@@ -83,32 +123,35 @@ describe("Users Route", () => {
         FirstName: "testfirstname2",
         LastName: "testlastname2",
         Email: "testemail2",
-        DepartmentId: "testdepartment2",
+        Department: { DepartmentCode: 2 },
+        Mandates: [],
         KeyUser: true,
       },
     ]);
-    router.navigate({ to: "/users" });
+    router.navigate({ to: "/administrator/users" });
     render(<RouterProvider router={router} />);
     await waitFor(async () => {
-      const users = await getUsers();
+      const users = await adminGetUsers();
       users.forEach((element: User) => {
         expect(screen.getByDisplayValue(element["FirstName"])).toBeVisible();
         expect(screen.getByDisplayValue(element["LastName"])).toBeVisible();
-        expect(screen.getByText(element["DepartmentId"])).toBeVisible();
         expect(screen.getByDisplayValue(element["Email"])).toBeVisible();
       });
+      expect(screen.getByText("testmandate1, testmandate2")).toBeVisible();
+
       const checkboxes = screen.getAllByRole("checkbox");
       expect(checkboxes[0]).not.toBeChecked;
       expect(checkboxes[1]).toBeChecked();
     });
   });
   it("should have options for creating a new user and error when creating a user goes wrong", async () => {
+
     await act(async () => {
-      router.navigate({ to: "/users" });
+      router.navigate({ to: "/administrator/users" });
     });
     await act(async () => {
       vi.mocked(useContext).mockReturnValue({
-        account: { FirstName: "test", DepartmentId: 1 },
+        account: { FirstName: "test", DepartmentId: 1, Department: { DepartmentCode: 1 } },
       });
       render(<RouterProvider router={router} />);
 
@@ -118,7 +161,8 @@ describe("Users Route", () => {
           FirstName: "testfirstname",
           LastName: "testlastname",
           Email: "testemail",
-          DepartmentId: "testdepartmentid",
+          Department: { DepartmentCode: 2 },
+
           KeyUser: false,
         },
         {
@@ -126,7 +170,8 @@ describe("Users Route", () => {
           FirstName: "testfirstname2",
           LastName: "testlastname2",
           Email: "testemail2",
-          DepartmentId: "testdepartmentid2",
+          Department: { DepartmentCode: 2 },
+
           KeyUser: true,
         },
       ]);
@@ -145,6 +190,7 @@ describe("Users Route", () => {
       fireEvent.click(addNewUserButton); // Example: Simulate a button click
     });
     // Check if the "Save" and "Cancel" buttons are visible in the Actions column
+    console.log("test")
     let saveButton = await screen.findByText("Save");
     let cancelButton = await screen.findByText("Cancel");
     expect(saveButton).toBeVisible();
@@ -153,7 +199,6 @@ describe("Users Route", () => {
     saveButton = await screen.findByText("Save");
     cancelButton = await screen.findByText("Cancel");
     await waitFor(() => {
-
       expect(screen.getByText("First name is required")).toBeVisible()
       expect(screen.getByText("Last name is required")).toBeVisible()
       expect(screen.getByText("Email is required")).toBeVisible()

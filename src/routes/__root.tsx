@@ -1,8 +1,8 @@
-import { useEffect, createContext, useState, useContext } from "react";
+import { useContext } from "react";
 import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
-import { useMsal } from "@azure/msal-react";
 import { UserContext } from "../UserContext";
+import NavigationAdmin from "@/components/NavigationAdmin";
+import NavigationKeyUser from "@/components/NavigationKeyUser";
 export const Route = createRootRoute({
   component: () => {
     return RootComponent();
@@ -10,9 +10,9 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-  // const { account } = useContext(UserContext);
+  const { account } = useContext(UserContext);
 
-  useEffect(() => {}, []);
+  console.log(account)
 
   return (
     <>
@@ -34,14 +34,16 @@ function RootComponent() {
         >
           About
         </Link>
-        <Link
-          to="/users"
+        {/* <Link
+          to="/projects"
           activeProps={{
             className: "font-bold",
-          }}
-        >
-          Users
-        </Link>
+          }}>Projects</Link> */}
+        {account && <>
+          {account.Administrator && <NavigationAdmin />}
+          {account.KeyUser && <NavigationKeyUser />}
+        </>}
+
       </div>
       <hr />
       <Outlet />
