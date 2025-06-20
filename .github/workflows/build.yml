@@ -45,6 +45,11 @@ jobs:
       #     .\.sonar\scanner\dotnet-sonarscanner begin /k:"wchauwindesheimorganization_AlphaSapphire-Frontend" /o:"wchauwindesheimorganization" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
       #     dotnet build
       #     .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+      - name: Confirm token is available
+        shell: powershell
+        run: echo "SONAR_TOKEN is set: $env:SONAR_TOKEN"
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Build and analyze
         env:
