@@ -31,9 +31,12 @@ jobs:
 
       - name: Run SonarCloud scanner
         uses: SonarSource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: .
+          organization: wchauwindesheimorganization   # ✅ explicitly set here
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_ORGANIZATION: wchauwindesheimorganization 
+# Uncomment the following lines if you want to use SonarQube instead of SonarCloud
 
 # name: SonarCloud
 
