@@ -4,7 +4,6 @@ import { assignMandate, unassignMandate } from "@/api/userApi";
 import { User } from "@/models/entities/User";
 import { Mandate } from "@/models/entities/Mandate";
 import MandateDialog from "@/components/MandateDialog";
-import { Department } from "@/models/entities/Department";
 
 export const usercolumns = ({
     updateUserState,
@@ -97,13 +96,11 @@ export const usercolumns = ({
             },
         },
         {
-            accessorKey: "Department",
+            accessorKey: "DepartmentId",
             header: "Department ID",
             cell: ({ getValue }: { getValue: () => {} }) => {
-
-                const userdepartment = getValue() as Department;
-                console.log(userdepartment.DepartmentCode)
-                return <span>{userdepartment.DepartmentCode}</span>
+                const departmentid = getValue();
+                return <span>{departmentid as string}</span>
             },
 
         },
